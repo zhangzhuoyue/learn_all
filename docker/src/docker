@@ -7,6 +7,99 @@ run:将镜像跑为镜像
 
 Docker安装
     社区版（CE）企业版（EE）
-    系统必须64位，内核版本必须3.1及以上
-    查看系统内核 uname -r
-    必须运行Linux
+    系统必须64位，内核版本必须3.1及以上。必须运行Linux
+    1.查看系统内核 uname -r
+
+    2.卸载旧版本
+    yum remove docker  docker-common docker-selinux docker-engine
+
+    3.安装需要的软件包， yum-util 提供yum-config-manager功能，另外两个是devicemapper驱动依赖的
+    yum install -y yum-utils device-mapper-persistent-data lvm2
+
+    4.设置yum源
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+
+
+    6.可以查看所有仓库中所有docker版本，并选择特定版本安装
+    yum list docker-ce --showduplicates | sort -r
+
+    7.安装docker
+    $ sudo yum install docker-ce  #由于repo中默认只开启stable仓库，故这里安装的是最新稳定版17.12.0
+    $ sudo yum install <FQPN>  # 例如：sudo yum install docker-ce-17.12.0.ce
+
+    8、启动并加入开机启动
+    $ sudo systemctl start docker
+    $ sudo systemctl enable docker
+
+    9、验证安装是否成功(有client和service两部分表示docker安装启动都成功了)
+    $ docker version
+
+
+配置阿里云加速
+vi /etc/docker
+
+
+docker是分层的。
+
+镜像常见操作：
+查找镜像
+docker search [tomcat] 搜索docker hub网站镜像详细信息
+
+下载镜像
+docker pull 镜像名：TAG
+
+查看镜像：
+docker image ls   #查看本地镜像
+
+
+
+
+删除镜像：
+docker rmi -f 镜像ID 或镜像名：TAG
+删除指定本地镜像
+-f 表示强制删除
+
+
+创建一个新的容器，起名称，指定宿主机和docker通信的端口
+运行容器： docker run --name tom  -d -p 8080:8080 tomcat:8.0.52
+一个镜像可以run多个容器，镜像不会被改变。
+
+
+
+容器有在运行，可以通过 docker ps 来查看
+docker ps
+
+查看日志：
+docker logs 容器名/容器id
+
+进入运行中的容器
+docker exec -it 容器ID或者容器名 /bin/bash
+#进入容器并且开启交互中模式终端
+#/bin/bash 是固有写法，作用是因为docker后台必须运行一个进程，否则容器退出，在这里表示启动容器后启动bash
+#也可以用docker exec在运行中的容器执行命令。
+
+拷贝文件：
+docker cp 主机文件路径 容器ID或容器名：容器路径 #主机中文件拷贝到容器中
+docker cp 容器ID或容器名：容器路径  主机文件路径 #容器中文件拷贝到主机中
+
+
+获取容器元信息：
+docker inspect 容器ID或容器名
+
+查看镜像信息
+docker image inspect tomcat:8.0.52
+
+
+启动一个容器
+docker start 容器名:容器id
+
+停止一个容器
+docker stop 容器名:容器id
+
+
+
+
+
+
+
