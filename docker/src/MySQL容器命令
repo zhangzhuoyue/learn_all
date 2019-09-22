@@ -1,0 +1,83 @@
+1.于MySQL进行交互是操作：
+    docker exec -it mysql01(容器名) /bin/bash  进入容器内部
+2.在MySQL容器已经创建后，添加容器数据卷。
+    docker run -it -v /宿主机机绝对路径：/容器内目录  镜像名
+
+4.创建一个MySQL容器。在创建一个MySQL容器需要指定他的root用户的密码
+docker run --name mysql02 -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 musql:5.6.28
+
+docker run  --privileged=true -d -v /home/zy/mysql/my.cnf:/var/lib/mysql/my.cnf  -v /home/zy/mysql/data/:/var/lib/mysql/data -p 3306:3306  --name mysql01 -e MYSQL_ROOT_PASSWORD=123456  mysql:5.6.28
+
+5. -v共享数据
+mysql默认的数据存储目录为/var/lib/mysql,我们可以通过宿主机共享容器/var/lib/mysql目录的方式来实现数据的持久化。
+在使用-v进行数据持久化时，使用docker image indpect 镜像名：TAG 查看他的元印象。知道他存储数据的位置。
+    从元信息中可以看到:Volumes，该字段表示容器存储数据的位置。
+
+
+docker安装MySQL，挂在外部数据和配置
+https://www.cnblogs.com/linjiqin/p/11465804.html
+
+docker run  --privileged=true -d -v /home/zy/mysql/my.cnf:/var/lib/mysql/my.cnf
+-v /home/zy/mysql/data/:/var/lib/mysql/data -p 3306:3306  --name mysql01 -e MYSQL_ROOT_PASSWORD=123456  mysql:5.6.28
+
+参数说明：
+--restart=always： 当Docker 重启时，容器会自动启动。 该参数可能使容器不断重启。
+--privileged=true：容器内的root拥有真正root权限，否则容器内root只是外部普通用户权限
+-v /opt/mysql/conf.d/my.cnf:/etc/my.cnf：映射配置文件
+-v /opt/mysql/data/:/var/lib/mysql：映射数据目录
+
+常见容器命令
+https://blog.csdn.net/wangmx1993328/article/details/81735070#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

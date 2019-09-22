@@ -44,60 +44,78 @@ docker是分层的。
 
 镜像常见操作：
 查找镜像
-docker search [tomcat] 搜索docker hub网站镜像详细信息
+    docker search [tomcat] 搜索docker hub网站镜像详细信息
 
 下载镜像
-docker pull 镜像名：TAG
+    docker pull 镜像名：TAG
 
 查看镜像：
-docker image ls   #查看本地镜像
-
-
+    docker image ls  或者 docker images   #查看本地镜像
 
 
 删除镜像：
-docker rmi -f 镜像ID 或镜像名：TAG
-删除指定本地镜像
--f 表示强制删除
+    docker rmi -f 镜像ID 或镜像名：TAG
+    删除指定本地镜像
+    -f 表示强制删除
 
 
 创建一个新的容器，起名称，指定宿主机和docker通信的端口
-运行容器： docker run --name tom  -d -p 8080:8080 tomcat:8.0.52
-一个镜像可以run多个容器，镜像不会被改变。
+    运行容器： docker run --name tom  -d -p 8080:8080 tomcat:8.0.52
+    一个镜像可以run多个容器，镜像不会被改变。
 
 
 
 容器有在运行，可以通过 docker ps 来查看
-docker ps
+    docker ps
 
 查看日志：
-docker logs 容器名/容器id
+    docker logs 容器名/容器id
 
-进入运行中的容器
-docker exec -it 容器ID或者容器名 /bin/bash
-#进入容器并且开启交互中模式终端
-#/bin/bash 是固有写法，作用是因为docker后台必须运行一个进程，否则容器退出，在这里表示启动容器后启动bash
-#也可以用docker exec在运行中的容器执行命令。
+进入容器并且开启交互中模式终端
+    docker exec -it 容器ID或者容器名 /bin/bash
+    #进入容器并且开启交互中模式终端
+    #/bin/bash 是固有写法，作用是因为docker后台必须运行一个进程，否则容器退出，在这里表示启动容器后启动bash
+    #也可以用docker exec在运行中的容器执行命令。
 
 拷贝文件：
-docker cp 主机文件路径 容器ID或容器名：容器路径 #主机中文件拷贝到容器中
-docker cp 容器ID或容器名：容器路径  主机文件路径 #容器中文件拷贝到主机中
+    docker cp 主机文件路径 容器ID或容器名：容器路径 #主机中文件拷贝到容器中
+    docker cp 容器ID或容器名：容器路径  主机文件路径 #容器中文件拷贝到主机中
 
 
 获取容器元信息：
-docker inspect 容器ID或容器名
+    docker inspect 容器ID或容器名
 
 查看镜像信息
-docker image inspect tomcat:8.0.52
+    docker image inspect tomcat:8.0.52
 
 
 启动一个容器
-docker start 容器名:容器id
+    docker start 容器名:容器id
 
 停止一个容器
-docker stop 容器名:容器id
+    docker stop 容器名:容器id
+
+删除一个容器
+    默认情况下，docker rm 命令只能删除处于终止或退出状态的容器，并不能删除运行中的容器。
+    如果使用 -f 参数强行删除，Docker会发送 SIGKILL 信号给容器。
 
 
+配置加速器
+国内有几家知名度较高的镜像源，分别是：网易蜂巢、阿里云、DaoCloud，使用该加速器后，下载镜像时速度会快很多。
+vi命令编辑Docker配置文件/etc/docker/daemon.json，添加如下内容：
+
+{
+"registry-mirrors":
+    [
+     "http://f1374db2.m.daocloud.io"
+    ]
+}
+
+接下来重启Docker使配置生效：
+
+[root@localhost ~]# systemctl restart docker
+
+原文链接：https://blog.csdn.net/takioo/article/details/88631108
 
 
 

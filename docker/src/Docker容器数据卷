@@ -1,0 +1,21 @@
+容器运行的数据持久化
+类似redis的aof rdb
+
+
+Docker mysql 把数据存储在本地目录
+docker run -d -e MYSQL_ROOT_PASSWORD=admin --name mysql -v /data/mysql/data:/var/lib/mysql -p 3306:3306 mysql
+
+指定配置文件
+docker run -d -e MYSQL_ROOT_PASSWORD=admin --name mysql -v /data/mysql/my.cnf:/etc/mysql/my.cnf -v /data/mysql/data:/var/lib/mysql -p 3306:3306 mysql
+
+docker容器的启动
+docker进程使用Unix Socket而不是TCP端口。而默认情况下，Unix socket属于root用户，需要root权限才能访问。
+
+你好，1.容器关闭，然后再启动容器，数据是存在的。
+2.创建容器，然后把容器删除，数据随着容器的删除也被删除
+3.如何删除容器不删除数据，在创建容器的时候docker run -v host_dir:containere_dir 这样可以解决你的问题！
+
+5. -v共享数据
+mysql默认的数据存储目录为/var/lib/mysql,我们可以通过宿主机共享容器/var/lib/mysql目录的方式来实现数据的持久化。
+在使用-v进行数据持久化时，使用docker image indpect 镜像名：TAG 查看他的元印象。知道他存储数据的位置。
+    从元信息中可以看到:Volumes，该字段表示容器存储数据的位置。
