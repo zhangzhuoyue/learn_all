@@ -30,6 +30,10 @@ docker run  --privileged=true -d -v /home/zy/mysql/my.cnf:/var/lib/mysql/my.cnf
 https://blog.csdn.net/wangmx1993328/article/details/81735070#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8
 
 
+安装MySQL之后需要给用户操作权限：
+grant all privileges on *.* to root@'%' identified by 'root';
+
+
 
 
 
