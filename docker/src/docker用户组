@@ -1,0 +1,6 @@
+建立 docker 组：
+
+$ sudo groupadd docker
+将当前用户加入 docker 组：
+
+$ sudo usermod -aG docker 用户名
