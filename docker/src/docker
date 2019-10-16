@@ -57,6 +57,8 @@ docker是分层的。
     docker rmi -f 镜像ID 或镜像名：TAG
     删除指定本地镜像
     -f 表示强制删除
+    docker rm <CONTAINER ID>: 删除容器
+    docker rmi <IMAGE ID>: 删除镜像
 
 
 创建一个新的容器，起名称，指定宿主机和docker通信的端口
