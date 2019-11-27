@@ -1,4 +1,4 @@
-package com.zzzy.xstream;
+package com.zzy.xstream;
 
 import com.thoughtworks.xstream.converters.basic.StringConverter;
 

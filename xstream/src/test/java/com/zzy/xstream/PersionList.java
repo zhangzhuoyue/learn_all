@@ -1,4 +1,4 @@
-package com.zzzy.xstream;
+package com.zzy.xstream;
 
 import java.util.Date;
 import java.util.List;
