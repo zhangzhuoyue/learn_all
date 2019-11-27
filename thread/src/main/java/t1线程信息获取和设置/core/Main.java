@@ -39,6 +39,7 @@ public class Main {
         try {
             String path = Main.class.getClassLoader().getResource("").getPath();
             path = URLDecoder.decode(path, "utf-8");
+            System.out.println(path);
             File logFile = new File(path + "data/log.txx");
             //判断文件是否存在
             if (!logFile.getParentFile().exists()) {
@@ -53,40 +54,39 @@ public class Main {
 
             //将线程状态打印到日志中。
             for (int i = 0; i < 10; i++) {
-                pw.printf("Main : status of thread :" + i +"  :  "+threads[i].getState());
+                pw.printf("Main : status of thread :" + i + "  :  " + threads[i].getState()+"  || ");
                 states[i] = threads[i].getState();
             }
 
             //启动线程
-            for (int i = 0; i < 10 ;i++){
+            for (int i = 0; i < 10; i++) {
                 threads[i].start();
             }
 
             //循环遍历所有开启的线程，如果状态发生变化，将状态打印到文件中。
             boolean finish = false;
-            while (!finish){
+            while (!finish) {
                 //如果状态发生变化
-                for (int i = 0 ;i < 10 ; i++){
-                    if (threads[i].getState() != states[i]){
+                for (int i = 0; i < 10; i++) {
+                    if (threads[i].getState() != states[i]) {
                         //将状态打印到文件中。
-                        writeThreadState(pw,threads[i],states[i]);
+                        writeThreadState(pw, threads[i], states[i]);
                         //记录新的状态
                         states[i] = threads[i].getState();
                     }
                 }
-                    //判断所有的线程是否结束
-                    finish = true;
-                    for (int i = 0;i < 10 ;i++){
-                        finish = finish && (threads[i].getState() == Thread.State.TERMINATED);
-                    }
-
+                //判断所有的线程是否结束
+                finish = true;
+                for (int i = 0; i < 10; i++) {
+                    finish = finish && (threads[i].getState() == Thread.State.TERMINATED);
+                }
             }
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
         }
 
 
@@ -94,11 +94,12 @@ public class Main {
 
 
     //编写打印方法
-    public void writeThreadState(PrintWriter pw ,Thread thread ,Thread.State OldState){
-        pw.printf("Main : Id %d\n",thread.getId());
-        pw.printf("Main : thread name : %s\n",thread.getName());
-        pw.printf("Main : Old state  %s\n",OldState.toString());
-        pw.printf("Main : New state  %s\n",thread.getState().toString());
+    public void writeThreadState(PrintWriter pw, Thread thread, Thread.State OldState) {
+        pw.printf("Main : Id %d\n", thread.getId());
+        pw.printf("Main : thread name : %s\n", thread.getName());
+        pw.printf("Main : Old state  %s\n", OldState.toString());
+        pw.printf("Main : New state  %s\n", thread.getState().toString());
+        pw.printf("*****************************************************\n");
 
     }
 }
