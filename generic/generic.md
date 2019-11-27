@@ -30,3 +30,11 @@
 idea
 导入一个新的java文件 显示小红球，或者创建一个新的子项目没有加载，在file -> source中重新加载项目目录
 
+* java命令 编译与反编译
+在cmd 中编译java文件，报错，无法映射gbk。win 默认的编码集是ANSI 到notpad++中将文件的编码集转换为ANSI 。然后就可以编译java文件
+编译：javac xx.java
+反编译： javap -v xxxx    这里只需要写class文件的文件名。
+
+反编译原理：
+javap -c 会对当前class字节码进行反编译生成汇编代码。
+javap -v classxx，不仅会输出行号、本地变量表信息、反编译汇编代码，还会输出当前类用到的常量池等信息。
