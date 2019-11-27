@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
     <groupId>com.ddddpp</groupId>
     <artifactId>learn_all</artifactId>
     <packaging>pom</packaging>
@@ -11,7 +12,11 @@
     <modules>
         <module>docker</module>
         <module>computer_word</module>
-        <module>iava_shiro</module>
+        <module>java_shiro</module>
+        <module>reflect</module>
+        <module>xstream</module>
+        <module>thread</module>
+        <module>generic</module>
     </modules>
 
 
