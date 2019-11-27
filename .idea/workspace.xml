@@ -2,20 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="691d2ed2-1151-4a0c-b16f-e9dd8ff14f0e" name="Default Changelist" comment="xml解析">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/libraries/Spring_4_3_18_RELEASE.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/java_shiro/java_shiro.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thread/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置/core/Calculator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置/core/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iava_shiro/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/java_shiro/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reflect/reflect.iml" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,9 +43,9 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="localRepository" value="E:\ZKR\tools\factory-repository" />
-        <option name="mavenHome" value="E:/weizhi/apache-maven-3.5.3/apache-maven-3.5.3" />
-        <option name="userSettingsFile" value="E:\weizhi\apache-maven-3.5.3\apache-maven-3.5.3\conf\settings.xml" />
+        <option name="localRepository" value="E:\soft\javasoft\private\apache-maven-3.6.0-bin\repository" />
+        <option name="mavenHome" value="$PROJECT_DIR$/../../../../apache-maven-3.6.0-bin/apache-maven-3.6.0" />
+        <option name="userSettingsFile" value="E:\soft\javasoft\private\apache-maven-3.6.0-bin\apache-maven-3.6.0\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
     <option name="importingSettings">
@@ -82,7 +75,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1569055687657" />
     <property name="findjar.last.used.dir" value="$PROJECT_DIR$/xstream" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../java-concurrency" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -94,7 +87,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -129,20 +122,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.GenericTest.generic">
-    <configuration name="FieldTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="reflect.FieldTest" />
-      <module name="reflect" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="reflect.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.Main.test">
     <configuration name="MethodTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="reflect.MethodTest" />
       <module name="reflect" />
@@ -161,6 +141,22 @@
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="GenericTest" />
       <option name="METHOD_NAME" value="generic" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="thread" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="t1线程信息获取和设置.core.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="t1线程信息获取和设置.core" />
+      <option name="MAIN_CLASS_NAME" value="t1线程信息获取和设置.core.Main" />
+      <option name="METHOD_NAME" value="test" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -207,11 +203,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.Main.test" />
         <item itemvalue="JUnit.GenericTest.generic" />
         <item itemvalue="JUnit.XstreamApplicationTests.beanToXml" />
         <item itemvalue="JUnit.XstreamApplicationTests.aliesAndFields" />
         <item itemvalue="Application.MethodTest" />
-        <item itemvalue="Application.FieldTest" />
       </list>
     </recent_temporary>
   </component>
@@ -239,7 +235,9 @@
       <workItem from="1574763681620" duration="8340000" />
       <workItem from="1574772158723" duration="1007000" />
       <workItem from="1574817234123" duration="1855000" />
-      <workItem from="1574819238237" duration="16623000" />
+      <workItem from="1574819238237" duration="18220000" />
+      <workItem from="1574863259787" duration="536000" />
+      <workItem from="1574863909648" duration="758000" />
     </task>
     <task id="LOCAL-00001" summary="docker操作命令">
       <created>1569080438915</created>
@@ -318,7 +316,35 @@
       <option name="project" value="LOCAL" />
       <updated>1574843521725</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="多线程">
+      <created>1574849733495</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1574849733496</updated>
+    </task>
+    <task id="LOCAL-00013" summary="xml解析">
+      <created>1574849847685</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1574849847685</updated>
+    </task>
+    <task id="LOCAL-00014" summary="多线程">
+      <created>1574851213408</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1574851213408</updated>
+    </task>
+    <task id="LOCAL-00015" summary="多线程">
+      <created>1574864472847</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1574864472847</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -347,6 +373,7 @@
     <MESSAGE value="泛型" />
     <MESSAGE value="反射" />
     <MESSAGE value="xml解析" />
-    <option name="LAST_COMMIT_MESSAGE" value="xml解析" />
+    <MESSAGE value="多线程" />
+    <option name="LAST_COMMIT_MESSAGE" value="多线程" />
   </component>
 </project>

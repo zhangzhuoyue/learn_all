@@ -7,12 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="generic" />
-        <module name="reflect" />
         <module name="java_shiro" />
         <module name="xstream" />
         <module name="computer_word" />
         <module name="docker" />
         <module name="thread" />
+        <module name="reflect" />
       </profile>
     </annotationProcessing>
   </component>
