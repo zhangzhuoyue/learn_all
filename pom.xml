@@ -14,7 +14,7 @@
         <module>computer_word</module>
         <module>java_shiro</module>
         <module>reflect</module>
-        <module>xstream</module>
+        <module>xstream_AND_反射_泛型</module>
         <module>thread</module>
         <module>generic</module>
     </modules>
