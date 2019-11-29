@@ -3,12 +3,28 @@
   <component name="ChangeListManager">
     <list default="true" id="691d2ed2-1151-4a0c-b16f-e9dd8ff14f0e" name="Default Changelist" comment="xml解析">
       <change afterPath="$PROJECT_DIR$/.idea/libraries/Spring_4_3_18_RELEASE.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/HELP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandlerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reflect/reflect.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置/core/Calculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Calculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置/core/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/main/java/com/zzy/xstream/XstreamApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/main/java/com/zzy/xstream/XstreamApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/DateConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/DateConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/NullConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/NullConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/Persion.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/Persion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/PersionList.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/PersionList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/PersionListConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/PersionListConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/Phone.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/Phone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/StringConverterDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/StringConverterDemo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/XstreamApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/XstreamApplicationTests.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,9 +59,9 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="localRepository" value="E:\soft\javasoft\private\apache-maven-3.6.0-bin\repository" />
-        <option name="mavenHome" value="$PROJECT_DIR$/../../../../apache-maven-3.6.0-bin/apache-maven-3.6.0" />
-        <option name="userSettingsFile" value="E:\soft\javasoft\private\apache-maven-3.6.0-bin\apache-maven-3.6.0\conf\settings.xml" />
+        <option name="localRepository" value="E:\ZKR\tools\factory-repository" />
+        <option name="mavenHome" value="E:/weizhi/apache-maven-3.5.3/apache-maven-3.5.3" />
+        <option name="userSettingsFile" value="E:\weizhi\apache-maven-3.5.3\apache-maven-3.5.3\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
     <option name="importingSettings">
@@ -75,7 +91,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1569055687657" />
     <property name="findjar.last.used.dir" value="$PROJECT_DIR$/xstream" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../ideaIU-2019.2.2.git/TEST/eds" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -87,27 +103,28 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\generic" />
-      <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\java_shiro\src\main" />
-    </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="com.zzzy.xstream" />
-    </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="" />
-    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.zzy.xstream" />
+      <recent name="com.zzzy.xstream" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.zzzy.xstream" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\xstream\src\test\java\com\zzy\xstream" />
       <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\xstream\src\test\java\com\zzzy\xstream" />
       <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\xstream\src\test\java" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\thread\src\main\java\t1线程信息获取和设置_AND_io流\thread" />
+      <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\generic" />
+      <recent name="C:\ProgramFiles\workSoft\ideaIUWorkSpace\learn_all\java_shiro\src\main" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -122,13 +139,13 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.Main.test">
-    <configuration name="MethodTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="reflect.MethodTest" />
-      <module name="reflect" />
+  <component name="RunManager" selected="Application.MyUncaughtExceptionHandlerTest">
+    <configuration name="MyUncaughtExceptionHandlerTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="t1线程信息获取和设置_AND_io流.thread.MyUncaughtExceptionHandlerTest" />
+      <module name="thread" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="reflect.*" />
+          <option name="PATTERN" value="t1线程信息获取和设置_AND_io流.thread.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -146,40 +163,40 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Main.apiTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="thread" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="t1线程信息获取和设置_AND_io流.thread.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="t1线程信息获取和设置_AND_io流.thread" />
+      <option name="MAIN_CLASS_NAME" value="t1线程信息获取和设置_AND_io流.thread.Main" />
+      <option name="METHOD_NAME" value="apiTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="thread" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="t1线程信息获取和设置.core.*" />
+          <option name="PATTERN" value="t1线程信息获取和设置_AND_io流.thread.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="t1线程信息获取和设置.core" />
-      <option name="MAIN_CLASS_NAME" value="t1线程信息获取和设置.core.Main" />
+      <option name="PACKAGE_NAME" value="t1线程信息获取和设置_AND_io流.thread" />
+      <option name="MAIN_CLASS_NAME" value="t1线程信息获取和设置_AND_io流.thread.Main" />
       <option name="METHOD_NAME" value="test" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="XstreamApplicationTests.aliesAndFields" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="xstream" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.zzy.xstream.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.zzy.xstream" />
-      <option name="MAIN_CLASS_NAME" value="com.zzy.xstream.XstreamApplicationTests" />
-      <option name="METHOD_NAME" value="aliesAndFields" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="XstreamApplicationTests.beanToXml" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="xstream" />
+      <module name="xstream_AND_反射_泛型" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.zzy.xstream.*" />
@@ -195,7 +212,7 @@
       </method>
     </configuration>
     <configuration name="XstreamApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <module name="xstream" />
+      <module name="xstream_AND_反射_泛型" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.zzy.xstream.XstreamApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -203,11 +220,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.MyUncaughtExceptionHandlerTest" />
+        <item itemvalue="JUnit.Main.apiTest" />
         <item itemvalue="JUnit.Main.test" />
         <item itemvalue="JUnit.GenericTest.generic" />
         <item itemvalue="JUnit.XstreamApplicationTests.beanToXml" />
-        <item itemvalue="JUnit.XstreamApplicationTests.aliesAndFields" />
-        <item itemvalue="Application.MethodTest" />
       </list>
     </recent_temporary>
   </component>
@@ -236,8 +253,12 @@
       <workItem from="1574772158723" duration="1007000" />
       <workItem from="1574817234123" duration="1855000" />
       <workItem from="1574819238237" duration="18220000" />
-      <workItem from="1574863259787" duration="536000" />
-      <workItem from="1574863909648" duration="758000" />
+      <workItem from="1574903690118" duration="822000" />
+      <workItem from="1574904582515" duration="1763000" />
+      <workItem from="1574909637725" duration="27000" />
+      <workItem from="1574910436441" duration="3858000" />
+      <workItem from="1574921602608" duration="3129000" />
+      <workItem from="1574927139040" duration="455000" />
     </task>
     <task id="LOCAL-00001" summary="docker操作命令">
       <created>1569080438915</created>
@@ -337,14 +358,7 @@
       <option name="project" value="LOCAL" />
       <updated>1574851213408</updated>
     </task>
-    <task id="LOCAL-00015" summary="多线程">
-      <created>1574864472847</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1574864472847</updated>
-    </task>
-    <option name="localTasksCounter" value="16" />
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -1,11 +1,10 @@
-package t1线程信息获取和设置.core;
+package t1线程信息获取和设置_AND_io流.thread;
 
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.URLDecoder;
 
 /**
@@ -99,7 +98,41 @@ public class Main {
         pw.printf("Main : thread name : %s\n", thread.getName());
         pw.printf("Main : Old state  %s\n", OldState.toString());
         pw.printf("Main : New state  %s\n", thread.getState().toString());
+        pw.printf("Main : method state  %s\n", thread.currentThread().getStackTrace()[0].getMethodName());
+        pw.printf("Main : New state  %s\n", thread.getState().toString());
         pw.printf("*****************************************************\n");
+
+    }
+
+
+    @Test
+    public void apiTest(){
+        Thread thread = new Thread();
+
+        //线程资源加载
+        thread.currentThread().getContextClassLoader(); //获取当前线程的资源加载器。在多线程的
+
+        //线程状态
+        thread.getState(); //获取线程状态
+
+
+        //线程中断
+        thread.interrupt();//中断方法
+
+        //线程转储
+        StackTraceElement[] st = thread.currentThread().getStackTrace();  //返回一个表示该线程堆栈转储的堆栈跟踪元素数组
+        for (StackTraceElement ele : st){
+            System.out.println(ele.getFileName());   //当前线程调用的类的类名
+            System.out.println(ele.getMethodName()); //访问调用的类的方法名
+            System.out.println(ele.getLineNumber());  //调用发生在位置
+            System.out.println("*********************************");
+        }
+
+
+        //一般程序崩溃时会退出，同时在控制台输出崩溃时的堆栈信息
+        //通过异常捕获，将造成系统异常的信息保存到文件中，或数据库中。
+        //具体实现在MyUncaughtExceptionHandler.java 中
+
 
     }
 }

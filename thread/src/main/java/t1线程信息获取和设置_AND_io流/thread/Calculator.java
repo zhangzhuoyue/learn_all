@@ -1,4 +1,4 @@
-package t1线程信息获取和设置.core;
+package t1线程信息获取和设置_AND_io流.thread;
 
 /**
  * @author zhangyue
