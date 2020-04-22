@@ -1,0 +1,112 @@
+## Spring
+
+* AOP  
+Spring框架的AOP机制可以让开发者把业务流程中的通用功能抽取出来，单独编写功能代码。在业务流程执行过程中，Spring框架会根据业务流程要求，自动把独立编写的功能代码切入到流程的合适位置。  
+    
+    在AOP中，描述切面的术语有通知（advice），切点（pointcut），连接点（join point）。，一下是基于注解的切面实现：  
+    1. @AspectJ 表示该类是一个切面  
+    2. advice   它用于描述切面的目标 即切面必须要完成的工作。通知定义了切面是什么以及何时使用  
+       SpringAOP可以应用5种类型的通知：  
+       1.前置通知（Before）：在目标方法被调用之前调用通知功能。
+       
+       2.后置通知（After）：在目标方法完成之后调用通知，此时不会关心方法的输出是什么。
+       
+       3.返回通知（After-returning）：在目标方法成功执行之后调用通知。
+       
+       4.异常通知（After-throwing）：在目标方法抛出异常后调用通知。
+       
+       5.环绕通知（Around）：通知包裹了被通知的方法，在被通知的方法调用之前和调用之后执行自定义的行为。  
+       执行顺序：环绕通知->前置通知  
+    3. 连接点（join point）
+       
+       是在应用执行过程中能够插入切面的一个点。这个点可以是调用方法时、抛出异常时、甚至修改一个字段时。切面代码可以利用这些点插入到应用的正常流程之中，并添加新的行为。  
+       JoinPoint 可以获取切点签名，进行操作，例如发射。
+    4. 切点（pointcut）
+       
+       一个切面并不需要通知应用的所有连接点。切点有助于缩小切面所通知的连接点范围。切点的定义会匹配通知所要织入的一个或多个连接点。我们通常使用明确的类和方法名称，或是利用正则表达式定义所匹配的类和方法名称来指定这些切点。稍后会介绍切入点表达式。另外，有些AOP框架是允许我们创建动态的切点，可以根据运行时的决策（比如方法的参数值）来决定是否应用通知。  
+      [切面案例](https://www.jianshu.com/p/8649b0fe660f)
+
+* spring常用注解  
+1、声明bean的注解
+```@Component 组件，没有明确的角色
+   
+   @Service 在业务逻辑层使用（service层）
+   
+   @Repository 在数据访问层使用（dao层）
+   
+   @Controller 在展现层使用，控制器的声明（C）
+```
+2、注入bean的注解  
+```@Autowired：由Spring提供
+   
+   @Inject：由JSR-330提供
+   
+   @Resource：由JSR-250提供
+   
+   都可以注解在set方法和属性上，推荐注解在属性上（一目了然，少写代码）。
+
+```
+3、java配置类相关注解  
+```@Configuration 声明当前类为配置类，相当于xml形式的Spring配置（类上）
+   
+   @Bean 注解在方法上，声明当前方法的返回值为一个bean，替代xml中的方式（方法上）
+   
+   @Configuration 声明当前类为配置类，其中内部组合了@Component注解，表明这个类是一个bean（类上）
+   
+   @ComponentScan 用于对Component进行扫描，相当于xml中的（类上）
+   
+   @WishlyConfiguration 为@Configuration与@ComponentScan的组合注解，可以替代这两个注解
+   ```
+4、切面（AOP）相关注解  
+```Spring支持AspectJ的注解式切面编程。
+   
+   @Aspect 声明一个切面（类上）
+   
+   使用@After、@Before、@Around定义建言（advice），可直接将拦截规则（切点）作为参数。
+   
+   @After 在方法执行之后执行（方法上）
+   
+   @Before 在方法执行之前执行（方法上）
+   
+   @Around 在方法执行之前与之后执行（方法上）
+   
+   @PointCut 声明切点
+   
+
+```
+5、@Bean的属性支持  
+```
+@Scope 设置Spring容器如何新建Bean实例（方法上，得有@Bean）
+其设置类型包括：
+
+Singleton （单例,一个Spring容器中只有一个bean实例，默认模式）,
+
+Protetype （每次调用新建一个bean）,
+
+Request （web项目中，给每个http request新建一个bean）,
+
+Session （web项目中，给每个http session新建一个bean）,
+
+GlobalSession（给每一个 global http session新建一个Bean实例）
+
+```
+6、@Value注解
+```
+@Value 为属性注入值（属性上）
+可以注入属性值，文件，网络资源，注入其他bean属性，注入普通字符，注入表达式结果，注入操作系统属性，
+```
+
+
+* String,StringBuffer与StringBuilder的区别  
+   
+   String：   
+   String是final修饰的类，是不可变类。因此，String的值是不可变的，这就导致每次对String的操作都会生成新的String对象，这样不仅效率低下，而且大量浪费有限的内存空间  
+   
+   StringBuffer与StringBuilder  
+   1. 字符串进行修改的时候，需要使用 StringBuffer 和 StringBuilder 类 。
+   2. String 类不同的是，StringBuffer 和 StringBuilder 类的对象能够被多次的修改，并且不产生新的未使用对象。  
+   3. 内部维护一个char数组，增删改造作的是该数组中的元素，不会产生新的对象。并且数组默认大小是16，数组扩容按需扩展。 
+   4. 在使用StringBuffer和StringBuilder时指定容量，避免多次扩容，造成性能损失  
+   5. StringBuffer线层安全，使用synchronized限制了访问路径，使得同一时刻只能有一个线程访问临界资源  
+   6. StringBuilder非线程安全
+     

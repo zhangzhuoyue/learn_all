@@ -9,6 +9,7 @@
         <module name="generic" />
         <module name="java_shiro" />
         <module name="xstream_AND_反射_泛型" />
+        <module name="xstream" />
         <module name="computer_word" />
         <module name="docker" />
         <module name="thread" />
@@ -18,6 +19,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="xstream" options="-parameters" />
       <module name="xstream_AND_反射_泛型" options="-parameters" />
     </option>
   </component>

@@ -2,29 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="691d2ed2-1151-4a0c-b16f-e9dd8ff14f0e" name="Default Changelist" comment="xml解析">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Spring_4_3_18_RELEASE.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandlerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker/src/docker镜像上次私服" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/消息中间件" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/项目介绍和个人介绍" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置/core/Calculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Calculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置/core/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/main/java/com/zzy/xstream/XstreamApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/main/java/com/zzy/xstream/XstreamApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/DateConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/DateConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/NullConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/NullConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/Persion.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/Persion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/PersionList.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/PersionList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/PersionListConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/PersionListConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/Phone.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/Phone.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/StringConverterDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/StringConverterDemo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xstream/src/test/java/com/zzy/xstream/XstreamApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/xstream_AND_反射_泛型/src/test/java/com/zzy/xstream/XstreamApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/src/docker" beforeDir="false" afterPath="$PROJECT_DIR$/docker/src/docker" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/src/docker用户组" beforeDir="false" afterPath="$PROJECT_DIR$/docker/src/docker用户组" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Calculator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/HELP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandlerTest.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -59,9 +49,9 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="localRepository" value="E:\ZKR\tools\factory-repository" />
-        <option name="mavenHome" value="E:/weizhi/apache-maven-3.5.3/apache-maven-3.5.3" />
-        <option name="userSettingsFile" value="E:\weizhi\apache-maven-3.5.3\apache-maven-3.5.3\conf\settings.xml" />
+        <option name="localRepository" value="E:\soft\javasoft\private\apache-maven-3.6.0-bin\repository" />
+        <option name="mavenHome" value="$PROJECT_DIR$/../../../../apache-maven-3.6.0-bin/apache-maven-3.6.0" />
+        <option name="userSettingsFile" value="E:\soft\javasoft\private\apache-maven-3.6.0-bin\apache-maven-3.6.0\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
     <option name="importingSettings">
@@ -103,7 +93,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -259,6 +249,16 @@
       <workItem from="1574910436441" duration="3858000" />
       <workItem from="1574921602608" duration="3129000" />
       <workItem from="1574927139040" duration="455000" />
+      <workItem from="1575789318348" duration="599000" />
+      <workItem from="1582964099311" duration="4020000" />
+      <workItem from="1583063788534" duration="19000" />
+      <workItem from="1584153482336" duration="608000" />
+      <workItem from="1584236090091" duration="1454000" />
+      <workItem from="1586785714448" duration="66000" />
+      <workItem from="1587382761908" duration="313000" />
+      <workItem from="1587430691025" duration="1272000" />
+      <workItem from="1587461323828" duration="13724000" />
+      <workItem from="1587521945499" duration="13337000" />
     </task>
     <task id="LOCAL-00001" summary="docker操作命令">
       <created>1569080438915</created>
