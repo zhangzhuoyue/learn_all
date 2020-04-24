@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="691d2ed2-1151-4a0c-b16f-e9dd8ff14f0e" name="Default Changelist" comment="xml解析">
-      <change afterPath="$PROJECT_DIR$/docker/src/docker镜像上次私服" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spring" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/消息中间件" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/项目介绍和个人介绍" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="691d2ed2-1151-4a0c-b16f-e9dd8ff14f0e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/实际工作中解决问题" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/待解决的问题" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/数据库" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/阿里巴巴编码规范认证" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/面试的需要看的内容.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/src/docker" beforeDir="false" afterPath="$PROJECT_DIR$/docker/src/docker" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/src/docker用户组" beforeDir="false" afterPath="$PROJECT_DIR$/docker/src/docker用户组" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Calculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/HELP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread/src/main/java/t1线程信息获取和设置_AND_io流/thread/MyUncaughtExceptionHandlerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring" beforeDir="false" afterPath="$PROJECT_DIR$/spring" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -258,7 +252,10 @@
       <workItem from="1587382761908" duration="313000" />
       <workItem from="1587430691025" duration="1272000" />
       <workItem from="1587461323828" duration="13724000" />
-      <workItem from="1587521945499" duration="13337000" />
+      <workItem from="1587521945499" duration="14945000" />
+      <workItem from="1587606521020" duration="3657000" />
+      <workItem from="1587650272351" duration="1316000" />
+      <workItem from="1587689494235" duration="18468000" />
     </task>
     <task id="LOCAL-00001" summary="docker操作命令">
       <created>1569080438915</created>
@@ -358,7 +355,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574851213408</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="xml解析">
+      <created>1587545698547</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1587545698547</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -386,8 +390,8 @@
     <MESSAGE value="`docker操作命令`" />
     <MESSAGE value="泛型" />
     <MESSAGE value="反射" />
-    <MESSAGE value="xml解析" />
     <MESSAGE value="多线程" />
-    <option name="LAST_COMMIT_MESSAGE" value="多线程" />
+    <MESSAGE value="xml解析" />
+    <option name="LAST_COMMIT_MESSAGE" value="xml解析" />
   </component>
 </project>

@@ -109,4 +109,228 @@ GlobalSession（给每一个 global http session新建一个Bean实例）
    4. 在使用StringBuffer和StringBuilder时指定容量，避免多次扩容，造成性能损失  
    5. StringBuffer线层安全，使用synchronized限制了访问路径，使得同一时刻只能有一个线程访问临界资源  
    6. StringBuilder非线程安全
+
+### Spring事务  
+
+spring提供了各种抽象，其中最重要的抽象：数据库的抽象和异常的抽象 可以方便的不同持久化框架中使用一样的数据库的操作  
+
+* 事务的本质  
+```
+1. Spring的声明式事务本质上是通过AOP来增强了类的功能Spring的AOP本质上就是为类做了一个代理
+看似在调用自己写的类,实 用的是增强后的代理类
+2. 在类内部一个不带事务的方法调用带事务的方法，如何让该方法调用带上事务 ？
+spring中给方法添加一个事务，在访问该方法，并不是直接访问，而是首先访问他的一个proxy代理，在代理中开启事务，然后执行方法，然后在代理类中关闭事务。
+如果是类的内部调用时无法使用事务，它并没有走事务代理类来开启事务。
+访问增强后的代理类的方法,而非直接访问自身的方法
+3.AOP中使用@around通知进行代理
+```
+
+
+
+* Spring的抽象事务接口：platformTransactionManager  【spring事务管理接口】  
+抽象接口的实现类：如果使用jdbc或者mybatis 使用spring 会创建一个DataSourceTransactionManager对象   
+管理接口的三个方法：     
+void commit (Transactionstatus status) throws TransactionException;  
+void rollback(Transactionstatus status) throws TransactionException;  
+TransactionStatus getTransaction(@Nullable TransactionDefinition definition) throws TransactionException; 获取设置的数据库事务属性
+
+
+* 事务属性  
+TransactionDefinition 事务定义对象，一下是他的属性  
+Propagation 事务传播机制  
+Isolation   事务隔离级别
+Timeout     事务超时时间【牵扯到事务的异常问题】  
+Read-only status   事务的只读状态  
+
+1. Propagation 
+   1. PROPAGATION_REQUIRED
+   Spring默认的传播机制，能满足绝大部分业务需求，如果外层有事务，则当前事务加入到外层事务，一块提交，一块回滚。如果外层没有事务，新建一个事务执行
+   2. PROPAGATION_REQUES_NEW
+   该事务传播机制是每次都会新开启一个事务，同时把外层事务挂起，当当前事务执行完毕，恢复上层事务的执行。如果外层没有事务，执行当前新开启的事务即可
+   3.  PROPAGATION_SUPPORT
+   如果外层有事务，则加入外层事务，如果外层没有事务，则直接使用非事务方式执行。完全依赖外层的事务
+   4.  PROPAGATION_NOT_SUPPORT
+   该传播机制不支持事务，如果外层存在事务则挂起，执行完当前代码，则恢复外层事务，无论是否异常都不会回滚当前的代码
+   5. PROPAGATION_NEVER
+   该传播机制不支持外层事务，即如果外层有事务就抛出异常
+   6. PROPAGATION_MANDATORY
+   与NEVER相反，如果外层没有事务，则抛出异常
+   7. PROPAGATION_NESTED
+   该传播机制的特点是可以保存状态保存点，当前事务回滚到某一个点，从而避免所有的嵌套事务都回滚，即各自回滚各自的，如果子事务没有把异常吃掉，基本还是会引起全部回滚的。
+   8. 传播规则回答了这样一个问题：一个新的事务应该被启动还是被挂起，或者是一个方法是否应该在事务性上下文中运行。
+
+2. Isolation    
+   1. 事务的隔离级别：多用户访问临界资源，定义本事务的数据完整性  
+   
+   2. 多事务运行导致的问题：
+      1. 脏读（Dirty read）-- 脏读发生在一个事务读取了被另一个事务改写但尚未提交的数据时。如果这些改变在稍后被回滚了，那么第一个事务读取的数据就会是无效的。
+      2. 不可重复读（Nonrepeatable read）-- 不可重复读发生在一个事务执行相同的查询两次或两次以上，但每次查询结果都不相同时。这通常是由于另一个并发事务在两次查询之间更新了数据。
+      3. 幻影读（Phantom reads）-- 幻影读和不可重复读相似。当一个事务（T1）读取几行记录后，另一个并发事务（T2）插入了一些记录时，幻影读就发生了。在后来的查询中，第一个事务（T1）就会发现一些原来没有的额外记录。
+      4. 对隔离级别产生的理解  
+          *** 理想状态下，事务之间将完全隔离，从而可以防止这些问题发生。然而，完全隔离会影响性能，因为隔离经常牵扯到锁定在数据库中的记录（而且有时是锁定完整的数据表）。侵占性的锁定会阻碍并发，要求事务相互等待来完成工作。
+         
+          *** 考虑到完全隔离会影响性能，而且并不是所有应用程序都要求完全隔离，所以有时可以在事务隔离方面灵活处理。因此，就会有好几个隔离级别。
+   
+   3. 隔离级别  
+      1. ISOLATION_DEFAULT	使用后端数据库默认的隔离级别
+      2. 读未提交： Read Uncommitted  
+         一个事务可以读取另一个未提交事务的数据。最低级别，它存在4个常见问题（脏读、不可重复读、幻读、丢失更新）。 
+      3. 读已提交： Read Committed  
+        1.（Oracle 默认级别）允许从已经提交的并发事务读取。可防止脏读，但幻读和不可重复读仍可能会发生。  
+        2.一个事务要等另一个事务提交后才能读取数据。 它解决了脏读问题，存在3个常见问题（不可重复读、幻读、丢失更新）。
+      4. 可重复读 ISOLATION_REPEATABLE_READ    
+         1.（MYSQL默认级别）对相同字段的多次读取的结果是一致的，除非数据被当前事务本身改变。可防止脏读和不可重复读，但幻读仍可能发生。可以防止其他事务的  
+         2.一个事务读到另一个事务修改后并提交的数据（update）。在同一个事务中，对于同一组数据读取到的结果不一致。比如，事务B 在 事务A 提交前读到的结果，和在 事务A 提交后读到的结果可能不同。不可重复读出现的原因就是由于事务并发修改记录而导致的。  
+         3.在开始读取数据（事务开启）时，不再允许修改操作 。它解决了脏读和不可重复读，还存在2个常见问题（幻读、丢失更新）。    
+      5. ISOLATION_SERIALIZABLE	  
+         1.完全服从ACID的隔离级别，确保不发生脏读、不可重复读和幻影读。这在所有隔离级别中也是最慢的，因为它通常是通过完全锁定当前事务所涉及的数据表来完成的。  
+         2.序列化： Serializable，序列化，或串行化。就是将每个事务按一定的顺序去执行，它将隔离问题全部解决，但是这种事务隔离级别效率低下，比较耗数据库性能，一般不使用。  
+   上面所有的情况前提是在一个事务中。  
+      5. [演示不同隔离级别的使用](https://blog.csdn.net/sun8112133/article/details/89739475)
+   
+3. Timeout    
+   1. 在@transaction 注解中添加@transaction(tomeout=60)  
+   2. 设置sql超时时间，但是不起效果的原因之一：  
+      1. transaction timeout，设置超时时间，每执行一次sql就check一次时间  
+      2. 注意，这里是每执行一次sql就check一次时间，代码中，执行插入sql时，check时间没超时，等再执行http请求时，这个不是sql，所以不会check过期时间，加上请求假死，所以，程序就hold在那，事务也不超时回滚。
+
+* 事务的传播机制作用于带事务的方法调用时，事务的处理规则  
+   1. 解决内部调用无法使用事务问题  
+      1. 在当前类内部用@autowired 注入当前类的实例，然后使用实例进行方法调用。这样类的内部调用转换为使用AOP代理来调用。
+   
+   2. requires_new 和nested事务传播特性的区别  
+      1. requires_new，使用启动一个新的事务  
+         1.两个事务没有关联。如果内部事务回滚，外部事务是不会回滚。 
+      2. nested，在原事务内部启动一个新的事务        
+         1.两个事务有关联  
+         2.外部事务回滚，内部事务也会回滚。如果是内嵌事务回滚，不会影响外部事务的提交，会正常提交。
+
+* 静态代理
+ 1. 概念：为其他对象提供一个代理以控制对某个对象的访问，代理类为被代理类预处理消息、过滤消息并在此之后将消息转发给被代理类，之后还能进行消息的后置处理。  
+ 2. 静态代理：要素：接口、被代理类实现接口、代理类实现接口，并将被代理类注入代理类，然后就可以在被代理类操作前后进行业务增强  
+    1. 接口  
+    public interface HelloInterface {  
+          &#160;&#160;&#160;&#160;&#160;void sayHello();  
+    }
+    
+    2. 被代理类：  
+    public class Hello implements HelloInterface{  
+        &#160;&#160;&#160;&#160;&#160;@Override  
+        &#160;&#160;&#160;&#160;&#160;public void sayHello() {  
+            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;System.out.println("Hello zhanghao!");  
+        &#160;&#160;&#160;&#160;&#160;}  
+    }  
+    3.  代理类：  
+    public class HelloProxy implements HelloInterface{  
+        &#160;&#160;&#160;&#160;&#160;private HelloInterface helloInterface = new Hello();  
+        @Override  
+        public void sayHello() {  
+            &#160;&#160;&#160;&#160;&#160;System.out.println("Before invoke sayHello" );  
+            &#160;&#160;&#160;&#160;&#160;helloInterface.sayHello();  
+            &#160;&#160;&#160;&#160;&#160;System.out.println("After invoke sayHello");  
+        }  
+    }   
+* 动态代理  
+  1. 概念：为其他对象提供一个代理以控制对某个对象的访问，代理类为被代理类预处理消息、过滤消息并在此之后将消息转发给被代理类，之后还能进行消息的后置处理。  
+ 
+  3. 动态代理：  利用反射机制在运行时创建代理类。
+     1. 静态代理和动态代理的接口、被代理类不变，改变的是代理类的使用，接口、被代理类不变，我们构建一个handler类来实现InvocationHandler接口。
+     2. 被代理类：  
+        public class ProxyHandler implements InvocationHandler{  
+            &#160;&#160;&#160;&#160;&#160;private Object object;  
+            &#160;&#160;&#160;&#160;&#160;public ProxyHandler(Object object){ 初始化被代理类  
+                &#160;&#160;&#160;&#160;&#160;this.object = object;  
+            }  
+            @Override    
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {  
+                &#160;&#160;&#160;&#160;&#160;&#160;&#160;System.out.println("Before invoke "  + method.getName());  
+                &#160;&#160;&#160;&#160;&#160;&#160;&#160;method.invoke(object, args);  
+                &#160;&#160;&#160;&#160;&#160;&#160;&#160;System.out.println("After invoke " + method.getName());  
+                &#160;&#160;&#160;&#160;&#160;&#160;&#160;return null;  
+            &#160;&#160;&#160;&#160;&#160;}  
+        }  
+     3. 执行被代理类：  
+         public static void main(String[] args) {  
+             &#160;&#160;&#160;&#160;&#160;&#160;&#160;System.getProperties().setProperty("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");  
+             &#160;&#160;&#160;&#160;&#160;&#160;&#160;HelloInterface hello = new Hello();  
+             &#160;&#160;&#160;&#160;&#160;&#160;&#160;InvocationHandler handler = new ProxyHandler(hello);  
+             &#160;&#160;&#160;&#160;&#160;&#160;&#160;HelloInterface proxyHello = (HelloInterface) Proxy.newProxyInstance(hello.getClass().getClassLoader(), hello.getClass().getInterfaces(), handler);  
+             &#160;&#160;&#160;&#160;&#160;&#160;&#160;proxyHello.sayHello();  
+         }  
+         输出：  
+         Before invoke sayHello  
+         Hello zhanghao!  
+         After invoke sayHello   
+         通过Proxy类的静态方法newProxyInstance返回一个接口的代理实例。针对不同的代理类，传入相应的代理程序控制器InvocationHandler。 
+     4. 动态代理的实现原理  
+     动态代理具体步骤：
+          通过实现 InvocationHandler 接口创建自己的调用处理器；  
+          通过为 Proxy 类指定 ClassLoader 对象和一组 interface 来创建动态代理类；  
+          通过反射机制获得动态代理类的构造函数，其唯一参数类型是调用处理器接口类型；  
+          通过构造函数创建动态代理类实例，构造时调用处理器对象作为参数被传入。  
+          
+     5. [动态代理博客](https://www.jianshu.com/p/9bcac608c714)
      
+
+
+### AOP原理  
+
+AOP基于动态代理：  
+1. 基于 JDK 实现动态代理，通过jdk提供的工具方法Proxy.newProxyInstance动态构建全新的代理类(继承Proxy类，并持有InvocationHandler接口引用 )字节码文件并实例化对象返回。(jdk动态代理是由java内部的反射机制来实例化代理对象，并代理的调用委托类方法)     
+2. 基于CGlib 动态代理模式 基于继承被代理类生成代理子类，不用实现接口。只需要被代理类是非final 类即可。(cglib动态代理底层是借助asm字节码技术
+
+* Proxy.newProxyInstance 参数说明  
+
+ClassLoader loader：ClassLoader将被代理类，加载器加载到工作区  
+Class<?>[] interfaces：代理对象的实现数组 
+InvocationHandler h：调用处理器   代理对象，既实现invocationHandler的代理类 
+
+* CGLIB  
+1. 案例  
+   public class SampleClass {  
+       &#160;&#160;&#160;&#160;&#160;&#160;&#160;public void test(){  
+           &#160;&#160;&#160;&#160;&#160;&#160;&#160;System.out.println("hello world");  
+       }  
+       public static void main(String[] args) {  
+          &#160;&#160;&#160;&#160;&#160;&#160;&#160; Enhancer enhancer = new Enhancer();  
+          &#160;&#160;&#160;&#160;&#160;&#160;&#160; enhancer.setSuperclass(SampleClass.class);  
+            &#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;enhancer.setCallback(new MethodInterceptor() {  
+              &#160;&#160;&#160;&#160;&#160;&#160;&#160;@Override  
+              &#160;&#160;&#160;&#160;&#160;&#160;&#160; public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {  
+               &#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;   System.out.println("before method run...");  
+               &#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;   Object result = proxy.invokeSuper(obj, args);  
+              &#160;&#160;&#160;&#160;&#160;&#160;&#160;   &#160;&#160;&#160;&#160;&#160;&#160;&#160;  System.out.println("after method run...");  
+              &#160;&#160;&#160;&#160;&#160;&#160;&#160;  &#160;&#160;&#160;&#160;&#160;&#160;&#160;   return result;  
+              &#160;&#160;&#160;&#160;&#160;&#160;&#160; }  
+           });  
+          &#160;&#160;&#160;&#160;&#160;&#160;&#160; SampleClass sample = (SampleClass) enhancer.create();  
+           &#160;&#160;&#160;&#160;&#160;&#160;&#160;sample.test();  
+     &#160;&#160;&#160;&#160;&#160;&#160;&#160;  }  
+   }  
+   
+    1. 通过一个Enhancer和一个MethodInterceptor来实现对方法的拦截，运行程序后输出为
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
