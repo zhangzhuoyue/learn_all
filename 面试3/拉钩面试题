@@ -1,0 +1,7 @@
+
+* 问题：简述Mybatis的Xml映射文件和Mybatis内部数据结构之间的映射关系？
+
+
+* xml中的namespace 就是对应着相应的全类名
+* 自动配置resultType，手动配置resultMap
+

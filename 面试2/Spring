@@ -1,0 +1,24 @@
+## Spring面试
+
+### [Spring中的 @Scope](https://www.cnblogs.com/liaojie970/p/8302749.html)
+* [单例模式讲解](https://www.cnblogs.com/daijiabao/p/11246617.html)  
+
+
+---
+### Spring 中的事务
+
+---
+### Spring  IOC 
+1. IOC 依赖注入，bean的@Scope 作用域
+
+
+---
+### Spring AOP
+1. AOP的原理  实现  基于反射
+
+---
+### Spring注解  
+1. autowired
+
+---
+### 

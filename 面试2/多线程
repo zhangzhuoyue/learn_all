@@ -1,0 +1,578 @@
+## 多线程  
+
+1. 异步和同步  
+
+   1. 同步交互：指发送一个请求,需要等待返回,然后才能够发送下一个请求，有个等待过程；
+
+   1. 异步交互：指发送一个请求,不需要等待返回,随时可以再发送下一个请求，即不需要等待。 区别：一个需要等待，一个不需要等待，在部分情况下，我们的项目开发中都会优先选择不需要等待的异步交互方式。
+
+---
+
+### 项目中的超时案件的对比使用异步思想  
+   1. rabbitmq中的多线程应用
+   
+   2. 时间超时案件的多线程应用
+   
+   3. 集群中的定时任务，如何防止重复执行
+
+
+
+
+---
+#### 创建线程的三种方式  
+
+1. 继承Thread类创建线程
+   1. 线程执行体 run方法，没有返回值，不可抛异常
+   2. 创建Thread子类的实例，也就是创建了线程对象
+   3. 启动线程，即调用线程的start()方法
+2. 实现Runnable接口创建线程  
+   1. 定义Runnable接口的实现类，一样要重写run()方法，这个run（）方法和Thread中的run()方法一样是线程的执行体  
+   2. 创建Runnable实现类的实例，并用这个实例作为Thread的target来创建Thread对象，这个Thread对象才是真正的线程对象  
+   3. 调用线程对象的start()方法来启动线程
+   3. 使用Callable
+       1. 创建Callable接口的实现类，并实现call()方法，然后创建该实现类的实例  
+       2. call方法可以有返回值，也可以声明抛出异常
+       3. 这个实例作为Thread的target来创建Thread对象，这个Thread对象才是真正的线程对象 
+
+4. 通过Callable和Future创建线程
+   1.FutureTask  
+     1. FutureTask 实现 Runnable 接口，可以将 FutureTask 对象作为任务提交给 ThreadPoolExecutor 去执行，也可以直接被 Thread 执行  
+     2. FutureTask 实现 Future 接口，也可以获得任务的执行结果
+     3. 两个构造函数 ：  
+        1. FutureTask(Callable<V> callable)  
+        2. FutureTask(Runnable runnable, V result)
+              
+              2. 创建Callable的实例，并用FutuerTask类来包装Callable对象，该FutuerTask封装了Callable对象call()方法的返回值  
+              3. 实例化FutuerTask类，然后将FutuerTask传递给thread对象，可以使用thread.start()方式启动任务；可以将任务提交该线程池执行任务；  
+              4. 通过FutuerTask类的对象的get()方法来获取线程结束后的返回值
+              5. [案例代码](https://blog.csdn.net/binggetong/article/details/81604283)
+
+---
+####  Executor
+
+#####  使用线程池例如用Executor框架 
+
+   1. Executor框架包括3大部分：[框架关系图](https://blog.csdn.net/tongdanping/article/details/79604637)  
+      1. 任务。也就是工作单元，包括被执行任务需要实现的接口：Runnable接口或者Callable接口；
+      2. 任务的执行。也就是把任务分派给多个线程的执行机制，包括Executor接口及继承自Executor接口的ExecutorService接口。
+      3. 异步计算的结果。包括Future接口及实现了Future接口的FutureTask类。
+---
+##### Executor 
+1. Executor [参考博客](https://blog.csdn.net/weixin_40304387/article/details/80508236)
+   1. Executor框架包括：线程池，Executor，Executors，ExecutorService，CompletionService，Future，Callable等。
+
+2. 线程池  
+   1.线程池分类：Executors  ThreadPoolExecutor
+     1. Executors 提供了快速创建线程池的功能
+        1. 
+
+3. Excutors  
+   1. 
+
+4. ExecutorService  
+   1. 
+
+5. CompletableFuture  
+
+6. CompletionService
+
+---
+####  synchronized  Lock  
+
+1. synchronized  
+    1. 等待通知机制
+2. Lock
+    2. 等待通知机制
+
+3. 二者区别
+
+---
+
+#### 死锁  
+1. 死锁的条件
+
+2. 死锁的解决方案
+
+---
+#### 宏观角度的并发问题 
+1. 安全性  
+
+2.活跃性  
+
+3. 性能问题  
+
+---  
+####  java内存模型  
+1. 三个关键字，六项规则
+
+2. 六项规则  
+    1. 程序的顺序性规则
+        ```
+       1.适用于单线程【单线程线程安全的原因】
+       2.不适用于多线程
+       ```
+    
+    2. volatile变量规则
+        ```
+         1.适用于多线程、单线程
+         2. 定义 ：一个 volatile 变量的写操作， Happens-Before 于后续对这个 volatile 变量的读操作。
+         3. 微观 ：原始的意义就是禁用 CPU 缓存，将缓存中的数据立即刷新到内存：解决了CPU缓存和内存数据一致性问题，以及重排序问题
+         4. 宏观表现 ：volatile的可见性和传递性
+         使用场景：volatile规则是对内存的写操作，对于读取它的线程而一定是可见的。因为他不能保证原子性，所以对于变量的复合操作无法保证变量状态的一致性
+       
+       ```
+    
+    3. 特性：传递性  
+        ```
+       1. 适用 单线程、多线程
+       2. 定义：A Happens-Before B，B Happens-Before C，则A Happens-Before C。
+       3. 传递性一般和volatile搭配使用，所以volatile声明的变量具有可见性和一致性
+       4.java并发包的实现原理之一
+       ```
+    4. 管程中锁的规则
+        ```
+       1. 适用于 多线程、单线程
+       2. 定义：同一把锁的解锁 Happens-Before 于后续对这个锁的加锁。 ；解释synchronized
+       3. java的实现方式：封装、同步
+       ```
+
+    4. 线程 join() 规则  
+        ```
+       1. 定义：针对线程等待。主线程调用join() 可以保证子线程对共享变量的操作，在主线程中是可见的。
+       
+       ```
+    
+    5. 线程 start() 规则  
+        ```
+       1. 定义：针对线程启动。主线程 A 启动子线程 B 后，子线程 B 能够看到主线程在启动子线程 B 前的操作
+       2. 这个问题牵扯到对线程状态的理解。
+       ```
+       1. 线程状态  
+            ```
+          1.理解线程，分析线程问题的一个关键点：线程生命周期，生命周期的重点是线程状态的转换
+          2.java的线程生命周期是以操作系统的线程生命周期为基础，既五态模型
+          3.java线程状态的转换【见脑图】
+          
+          ```
+
+    
+---
+#### 多线程中的单例模式   
+
+1. 单例模式分析
+
+---
+#### 创建线程池的两种方式  
+
+1. Executors 线程工厂  ：可以创建线程的种类  
+   1. 创建使用单个线程的线程池
+        ```
+      队列使用无界的LinkedBlockingQueue
+                ExecutorService es1 = Executors.newSingleThreadExecutor();
+                for (int i = 0; i < 10; i++) {
+                    es1.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println(Thread.currentThread().getName() + "正在执行任务");
+                        }
+                    });
+        ```
+    2. 创建使用固定线程数的线程池  
+        ```
+       1.线程池的基本大小和最大大小设置为参数中指定的值，创建的线程池不会超时。
+        2.队列使用无界的LinkedBlockingQueue
+                ExecutorService es2 = Executors.newFixedThreadPool(3);
+                for (int i = 0; i < 10; i++) {
+                    es2.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println(Thread.currentThread().getName() + "正在执行任务");
+                        }
+                    });
+                }
+        ```
+     3. 创建一个会根据需要创建新线程的线程池
+        ```
+        1.线程池的最大Integer.MAX_VALUE ，基本大小设置为 0 ，超时时间设置 1 分钟。这种方式创建的线程池可以无限扩展，并根据需求低是适当收缩。
+        2.在预定义线程池newCachedThreadPool工厂方法使用了  SynchronousQueue
+         ExecutorService es3 = Executors.newCachedThreadPool();
+                for (int i = 0; i < 20; i++) {
+                    es3.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println(Thread.currentThread().getName() + "正在执行任务");
+                        }
+                    });
+                }
+        ```
+ 
+      4. 创建拥有固定线程数量的定时线程任务的线程池
+       ```
+       ScheduledExecutorService es4 = Executors.newScheduledThreadPool(2);
+              System.out.println("时间：" + System.currentTimeMillis());
+              for (int i = 0; i < 5; i++) {
+                  es4.schedule(new Runnable() {
+                      @Override
+                      public void run() {
+                          System.out.println("时间："+System.currentTimeMillis()+"--"+Thread.currentThread().getName() + "正在执行任务");
+                      }
+                  },3, TimeUnit.SECONDS);
+              }
+      ```
+
+      5. 创建只有一个线程的定时线程任务的线程池
+        ```
+       ScheduledExecutorService es5 = Executors.newSingleThreadScheduledExecutor();
+              System.out.println("时间：" + System.currentTimeMillis());
+              for (int i = 0; i < 5; i++) {
+                  es5.schedule(new Runnable() {
+                      @Override
+                      public void run() {
+                          System.out.println("时间："+System.currentTimeMillis()+"--"+Thread.currentThread().getName() + "正在执行任务");
+                      }
+                  },3, TimeUnit.SECONDS);
+              }
+          }
+      }
+
+      ```
+
+
+        
+
+2. ThreadPoolExecutor  灵活，稳定的线程池，允许进行各种定制
+1. 使用线程池的原因：
+    1. 调用操作系统内核API，操作系统为线程分配一系列的资源，成本很高
+    2. 线程是一个重量级对象，应该避免频繁创建和销毁
+
+2. 线程池的池化资源的区别
+   1. 池化资源的一般模式 ： 申请资源acquire()，释放资源release()  
+   2. 线程池不是池化资源的原因 ： 
+      1. 如果线程池是池化资源模式，则任务的执行是有Thread的API执行
+      2. Thread提供了启动线程的API，但是没有提供启动任务的API ， Thread并没有执行任务以及执行任务的API
+
+3. 从宏观上来说线程池  
+    1. Java 并发包里提供的线程池，最核心的是 ThreadPoolExecutor ，它强调的是 Executor，而不是一般意义上的池化资源
+    2. ThreadPoolExecutor的参数 ：  
+        1. corePoolSize ：   
+          1.默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中  
+          2.prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程
+        
+        2. maximumPoolSize：  
+           1.线程池最大线程数，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程
+        
+        3. keepAliveTime ：
+           1. 表示线程没有任务执行时最多保持多久时间会终止
+           
+           2. 即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；
+        
+        4. workQueue :  
+           1. 一个阻塞队列，用来存储等待执行的任务 
+           2. 一般来说，阻塞队列的队列的选择有一下几种选择： 
+               1.  阻塞队列的线程安全基于Lock锁实现的
+               
+                    ArrayBlockingQueue: 数据结构是数组，在进行元素的增删并不擅长  ，它是有界的。  
+                     
+                    LinkedBlockingQueue：
+                    ```
+                   1. 从链表的存储特点来说，擅长增删操作，并且任务的读取是遵循FIFO，并没有涉及到他随机访问的短板。
+                   2. newFixedThreadPool和newSingleThreadExecutor默认使用了一个无界的LinkedBlockedQueue
+                   3.如果线程池的任务持续快速的到达，并且超过线程池处理的速度，那么队列将无限制的增加，会在成OOM问题
+                   4.OOM问题如何分析，用什么工具诊断？
+                   5.稳妥的资源管理策略是使用有界队列 ：  ArrayBlockingQueue，有界的LinkedBlockingQueue，有助于避免资源耗尽的情况发生。
+                   6.队列的大小和线程池的大小必须一起调节，如果线程池较小，而队列较大，有助于减少内存的吞吐量，降低CPU使用，减少上限文切换，代价是限制吞吐量
+
+                   ```
+                      
+                    SynchronousQueue： 
+                    ```
+                    1. 不是一个真正的队列，是线程之间进行移交的机制。要将一个元素放入 SynchronousQueue中，必须有另一个线程正等待接受这个元素 。如果没有线程正在等待，并且线程池的当前大小小鱼最大值，那么ThreadPoolExecutor将创建一个新的线程，否则根据饱和策略，将这个任务拒绝。
+                   2. 使用直接移交效率高，只有在线程池是无界或者可以拒绝任务是，它才有使用价值。
+                   3. 在预定义线程池newCachedThreadPool工厂方法使用了  SynchronousQueue
+
+                   ```
+                   
+                   PriorityBlockingQueue 
+                   ```
+                   优先队列,这种队列根据优先级来安排，任务的优先级可以通过
+                   ```
+                     
+        5. threadFactory：线程工厂，定制thread基类，维护一些统计信息(有多少线程被创建，线层名称)，将这些线程调试信息写入日志。为线程起一个有意义的名称，有助于分析 在线程转储和错误日志 ？
+        
+        6. handler：表示当拒绝处理任务时的策略，拒绝策略发生的时机：任务 > 线程池最大线程数+有界队列容量；有以下四种取值：
+           ```
+            ThreadPoolExecutor.AbortPolicy:中止(Abort),默认的饱和策略，该策略抛出RejectedExecutionException异常。调用者可以捕获这个异常，根据自己的需求自己的处理代码 
+            ThreadPoolExecutor.DiscardPolicy：Discard策略会悄悄抛出异常，但是不抛出异常。 
+            ThreadPoolExecutor.DiscardOldestPolicy：1.抛弃最旧的任务，策略会抛弃下一个将要执行的任务，然后尝试重新提交新的任务  ，丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）  
+                                                    2.如果工作队列是优先级队列priorityblockingQueue。那么这个策略会抛弃优先级最好的任务。因此优先级队列和 "抛弃最旧"策略最好不放在一起。
+            ThreadPoolExecutor.CallerRunsPolicy：调用者策略实现一种调节机制，不会抛弃任务，也不会抛出异常，而是将这些任务回退给调用者，在调用execute线程中执行，以降低新任务流量。
+
+           ```
+      
+---
+
+### 多线程查询数据库的数据重复问题  
+[limit分页查询优化](https://www.cnblogs.com/zack-/archive/2012/04/17/mysql_limit_efficiency.html)
+```
+1. 靠主键ID来定位起始段总是最快
+2. 使用id定位当前页查询的起始元素，根据id进行order by ASC进行升序，取出需要的行数
+   只提供下一页跳转功能，SELECT * FROM message WHERE id > 9527 ORDER BYid ASC LIMIT 20;
+
+3. 项目中如何实现：原子类
+4. 多线层查询分页代码实现：https://blog.csdn.net/szzssz/article/details/81184793
+```
+* 使用分页查询的事项
+   
+   1. 创建两个任务：1.进行案件超时计算的任务 T3；2.从数据库查询数据的任务，开启了两个线程 T1 T2
+   2. CyclicBarrier线程协作机制 *** 看脑图 ***
+   3. 回调函数  
+      1. 定义：回调函数是：将自己定义的函数作为参数传递给另一个函数，在另一个函数在运行时来调用的函数
+     
+
+
+
+---
+
+### happens-before 
+
+1. 
+
+--- 
+### [JVM内存模型](https://www.jianshu.com/p/76959115d486)
+1. 计算机硬件导致的问题  
+    1. 内存的读写速度也远远赶不上cpu。因此cpu厂商在每颗cpu上加上高速缓存，用于缓解这种情况  
+    2. cpu上加入了高速缓存这样做解决了处理器和内存的矛盾(一快一慢)，但是引来的新的问题 - 缓存一致性
+    2. 如何保证多个处理器运算涉及到同一个内存区域时，多线程场景下会存在缓存一致性问题，那么运行时保证数据一致性？  处理器需遵循一些协议保证一致性。【如MSI，MESI  
+        1. 在CPU层面，内存屏障提供了个充分必要条件  
+        2.   [内存屏障](https://www.jianshu.com/p/76959115d486)  
+        3. 为什么需要内存屏障 ：对于读屏障:在指令前插入读屏障，可以让高速缓存中的数据失效，强制从主内存取。 举例：java的volatile关键  
+        4. 内存屏障的作用 ： 1.阻止屏障两侧指令重排序     2.强制把写缓冲区/高速缓存中的脏数据等写回主内存，让缓存中相应的数据失效。  
+    3. 分析内存屏障在volatile的区别  
+        1.  当我们声明某个变量为volatile修饰时，这个变量就有了线程可见性，volatile通过在读写操作前后添加内存屏障。 这个命令是有jvm做的  
+        2. volatile具有的特性就是内存屏障具有的特性：可见性  有序性。但是不具有原子性，在复合操作中无法保证
+        
+2. java内存区域  
+   1. Java内存模型（Java Memory Model ,JMM）就是一种符合内存模型规范的，屏蔽了各种硬件和操作系统的访问差异的，保证了Java程序在各种平台下对内存的访问都能保证效果一致的机制及规范。
+   2. java内存模型符合计算机硬件的规则。Java程序内存的分配是在JVM虚拟机内存分配机制下完成
+   3. java内存模型定义： 一种符合内存模型规范的，屏蔽了各种硬件和操作系统的访问差异的，保证了Java程序在各种平台下对内存的访问都能保证效果一致的机制及规范。  
+   4. java内存模型解决的问题 ：它的主要目的是解决由于多线程通过共享内存进行通信时，存在的本地内存数据不一致、编译器会对代码指令重排序、处理器会对代码乱序执行等带来的问题。可以保证并发编程场景中的原子性、可见性和有序性。  
+   5. java内存模型中分为五大区域：方法区和堆是所有线程共享的，栈，本地方法栈和程序虚拟机则为线程私有的。  
+       1.  [java虚拟机内存图](https://upload-images.jianshu.io/upload_images/10006199-a4108d8fb7810a71.jpeg?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp)  
+       2. 程序计数器 ：它是线程私有的，可以认作为当前线程的行号指示器。
+          ```
+          在一个确定的时刻都只会执行一条线程中的指令，一条线程中有多个指令，为了线程切换可以恢复到正确执行位置，每个线程都需有独立的一个程序计数器，不同线程之间的程序计数器互不影响，独立存储。 
+          ```
+       3. Java栈（虚拟机栈）
+          1. 同计数器也为线程私有，生命周期与相同,栈描述的是Java方法执行的内存模型。
+          2. 每个方法被执行的时候都会创建一个栈帧用于存储局部变量表，操作栈，动态链接，方法出口等信息。每一个方法被调用的过程就对应一个栈帧在虚拟机栈中从入栈到出栈的过程  
+          3. 栈帧的位置:  内存 -> 运行时数据区 -> 某个线程对应的虚拟机栈 -> here[在这里]  
+          4. 平时说的栈一般指局部变量表部分,存放基本数据类型和对象的引用  
+          5. 
+       
+       4.  本地方法栈  
+          1. 本地方法栈是与虚拟机栈发挥的作用十分相似,区别是虚拟机栈执行的是Java方法(也就是字节码)服务，而本地方法栈则为虚拟机使用到的native方法服务，和计算机底层。
+       
+       5. 堆  
+          1. 堆是java虚拟机管理内存最大的一块内存区域，因为堆存放的对象是线程共享的，所以多线程的时候也需要同步机制  
+          2. java虚拟机规范对这块的描述是:所有对象实例及数组都要在堆上分配内存
+          3. 注意 ：它是所有线程共享的，它的目的是存放对象实例。同时它也是GC所管理的主要区域，因此常被称为GC堆，又由于现在收集器常使用分代算法，Java堆中还可以细分为新生代和老年代  
+          4. 
+       
+       6. 方法区  
+          1. 方法区同堆一样，是所有线程共享的内存区域，为了区分堆，又被称为非堆  
+          2. 存储已被虚拟机加载的类信息、常量、静态变量，如static修饰的变量加载类的时候就被加载到方法区中。  
+          3. 如果是jdk1.7或1.8环境下运行 同时限制堆的大小  将报heap space 即常量池在堆中  
+          4. jdk8真正开始废弃永久代，而使用元空间(Metaspace)  
+          
+3. GC  
+   1. GC(Garbage Collection)：即垃圾回收器，主要是用来回收，释放垃圾占用的空间。    
+   2. 为什么需要学习GC  
+      1. 一般不容易出现内存泄漏问题。但是写代码难免会遇到一些特殊情况，比如OOM？
+3. 三个角度切入来学习GC  
+   1. 哪些内存要回收  
+      1. 程序计数器、虚拟机栈、本地方法栈，由线程而生，随线程而灭。
+      2. Java堆、方法区则不一样。方法区存放着类加载信息，但是一个接口中多个实现类需要的内存可能不太一样，堆存放实例对象，这些对象的内存分配都是在运行时期才知道，这部分内存的分配和回收都是动态的，gc关注的也正是这部分的内存。
+      3. Java堆是GC回收的“重点区域”。堆中基本存放着所有对象实例，gc进行回收前，第一件事就是确认哪些对象存活，哪些死去[即不可能再被引用]
+      4. 堆的回收区域  
+         1. 为了高效的回收，jvm将堆分为三个区域  
+            1.新生代（Young Generation）NewSize和MaxNewSize分别可以控制年轻代的初始大小和最大的大小  
+            2.老年代（Old Generation）  
+            3.永久代（Permanent Generation）【1.8以后采用元空间，就不在堆中了】  
+   
+   2. 什么时候回收  
+      1.  判断对象是否存活算法  
+      2. 1.引用计数算法
+         早期判断对象是否存活大多都是以这种算法，这种算法判断很简单，简单来说就是给对象添加一个引用计数器，每当对象被引用一次就加1，引用失效时就减1。当为0的时候就判断对象不会再被引用。
+         优点:实现简单效率高，被广泛使用与如python何游戏脚本语言上。
+         缺点:难以解决循环引用的问题，就是假如两个对象互相引用已经不会再被其它其它引用，导致一直不会为0就无法进行回收。
+         
+         2.可达性分析算法    
+         ```
+         目前主流的商用语言[如java、c#]采用的是可达性分析算法判断对象是否存活。这个算法有效解决了循环利用的弊端。
+         它的基本思路是通过一个称为“GC Roots”的对象为起始点，搜索所经过的路径称为引用链，当一个对象到GC Roots没有任何引用跟它连接则证明对象是不可用的。         
+         ```
+   3. 如何回收  
+      1. 垃圾收集算法    
+        ```
+      1.标记/清除算法【最基础】
+      2.复制算法
+      3.标记/整理算法
+      jvm采用`分代收集算法`对不同区域采用不同的回收算法。
+      ```
+      2. 新生代采用复制算法  
+      ```
+      
+      ```
+        
+        
+
+---
+### countDownLatch和CyclicBarrier 的区别  
+
+1.  countDownLatch 不支持异步调用，他的计数器不可重置
+2.  CyclicBarrier 支持异步，计数器可重置，存在生产者和消费者再次调用时的时序关系
+3.  
+---  
+
+### synchronized和lock的区别
+
+1. 脑图
+
+--- 
+### 分布式高并发怎么处理  
+1. 
+---
+###  sleep() 和 wait()  
+1.  脑图
+--- 
+### run()和 start() 
+
+---
+###  线程乐观锁跟悲观锁  
+1. 在数据库层面
+
+2. java语法层面
+
+---
+### [线程状态转换](https://blog.csdn.net/tongxuexie/article/details/80145663)
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

@@ -1,0 +1,350 @@
+### == equals 
+
+1. equls返回为true,则两者的hashcode一定相等，意即相等的对象必须具有相等的哈希码。每当equals方法被覆写，通常需要重写hashCode方法从而
+保持对象行为的一致性
+
+2. 有相等的hashcode的两个对象equals不一定成立。hashcode是作为一个对象存储的参考,是数据的摘要，使用小的空间表示大的空间，自然存在冲突。  
+   1. hash表本身是一种散列表，在数据存储这块，功效比较大。  
+   2. equals是相当于两对象之间的属性（成员变量）“相等”，意即具有相同的行为（方法）。或许这样讲起来理解比较的费劲
+   3. 使用场景 ：唯一标识 ，例如hashmap中使用hash确定元素应该存储的位置。
+       1. string重写hash  h = 31*h + val[off++];
+       2.  java object类默认的hashcode()计算方法是根据对象的内存地址来计算的。所以可由此来判断默认不重写hashcode()方法的两个对象是否相同。
+       3. 可重写obejetc 类的hashCode()方法，去根据object对象的实际内容生成hashcode值，比如String类，改写了hashcode()，根据string字符串的内容区生成hashcode，而非根据object类默认的内存地址。
+       4. 首先判断hash，在判断equals 。
+
+---
+### 接口和抽象类区别  
+
+1. 抽象类  
+    1. 抽象类必须用 abstract 修饰，子类必须实现抽象类中的抽象方法，如果有未实现的，那么子类也必须用 abstract 修饰。抽象类默认的权限修饰符为 public  
+    2. 抽象类是一类事物特征抽象，存在一类事务共有的属性方法。如果使用多继承，会破坏事物之间的界限。
+2. 抽象类和普通类的区别  
+   1. 抽象类必须用public、procted 修饰(如果为private修饰，那么子类则无法继承，也就无法实现其抽象方法）。默认缺省为 public  
+   2. 抽象类无法创建对象  
+   3. 如果一个子类继承抽象类，那么必须实现其所有的抽象方法。如果有未实现的抽象方法，那么必须定义为 abstract
+   
+3. 接口  
+    1. 接口中的变量隐式的使用 public static final 修饰，并且需要给出初始值。方法隐式的使用 public abstract 修饰(并且只能是 public   
+    2. 接口是一系列行为的抽象，
+
+4. 普通类  
+    1. 是行为的抽象。
+
+--- 
+### hash 代表什么  
+1. 是一种从任何一种数据中创建小的数字“指纹”的方法。散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来。
+2. 散列值通常用一个短的随机字母和数字组成的字符串来代表
+
+--- 
+### java集合  
+
+* 总述 ：List , Set 继承 Collection接口；Map为独立接口
+    Set下有HashSet，LinkedHashSet，TreeSet
+    HashSet
+    底层数据结构是哈希表。(无序,唯一)
+    如何来保证元素唯一性?
+    1.依赖两个方法：hashCode()和equals()
+    
+    
+    TreeSet
+    底层数据结构是红黑树。(唯一，有序)
+    1. 如何保证元素排序的呢?
+    自然排序
+    比较器排序
+    2.如何保证元素唯一性的呢?
+    根据比较的返回值是否是0来决定
+    
+    
+    LinkedHashSet
+    底层数据结构是链表和哈希表。(FIFO插入有序,唯一)
+    1.由链表保证元素有序
+    2.由哈希表保证元素唯一
+
+
+hashset :使用hashmap实现，hashset中数据存储在hashmap的key处，value是object对象
+LinkedHashSet：底层数据结构是链表和哈希表。(FIFO插入有序,唯一)
+               1.由链表保证元素有序
+               2.由哈希表保证元素唯一
+TreeSet :
+        底层数据结构是红黑树。(唯一，有序)
+        1. 如何保证元素排序的呢?
+        自然排序
+        比较器排序
+        2.如何保证元素唯一性的呢?
+        根据比较的返回值是否是0来决定
+自然排序（使用空参构造）：需要集合中的元素实现Comparable接口，并且重写接口中的compareTo方法；   方法返回值的正,负和0 ，来决定此元素在二叉树中放置的左右顺序，返回0此元素就不会往里面放置；
+
+
+比较器排序（使用有参构造）：传入一个比较器并实现它（可以定义一个类，实现比较器这个接口）；另外一般采用匿名内部类的方式传入，比较简单；
+ TreeSet<Student> set = new TreeSet<>(new Comparator<Student>() {
+        //采用匿名内部类传入比较器对象；
+            @Override
+            public int compare(Student s1, Student s2) {
+                int num1=s1.getAge()-s2.getAge();
+                int num2=num1==0?(s1.getName().compareTo(s2.getName())):num1;
+                return num2;
+
+            }
+        });
+
+数组自定义排序：
+Arrays.sort(arr, new Comparator<Integer>() {
+            //调用数组工具类Arrays中的排序方法，传入数组和比较器进行排序；
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1-o2;
+            }
+        });
+        System.out.println(Arrays.toString(arr));
+    }
+
+
+
+
+
+
+
+* List下有ArrayList，Vector，LinkedList
+    list实现比较排序
+      list.sort(new Comparator<Integer>() {
+            //集合对象调用排序sort方法，传入比较器，即可对元素进行排序；
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return o1-o2;
+                }
+            });
+            System.out.println(list);
+        }
+小结
+TreeSet的主要功能用于排序 。如果是存入基本数据包装类，则自然排序；引用则实现compareable接口 ，实现compareTo
+LinkedHashSet的主要功能用于保证FIFO即有序的集合(先进先出)
+HashSet只是通用的存储数据的集合
+
+
+
+* Map下有Hashtable，LinkedHashMap，HashMap，TreeMap 
+
+    TreeMap是有序的，HashMap和HashTable是无序的。
+    Hashtable的方法是同步的，HashMap的方法不是同步的。这是两者最主要的区别。
+
+hashmap数据结构：
+              HashMap采用Entry数组来存储key-value对，每一个键值对组成了一个Entry实体，Entry类实际上是一个单向的链表结构，它具有Next指针，可以连接下一个Entry实体，依次来解决Hash冲突的问题，因为HashMap是按照Key的hash值来计算Entry在HashMap中存储的位置的，如果hash值相同，而key内容不相等，那么就用链表来解决这种hash冲突。
+
+(1)HashMap里面存入的键值对在取出的时候是随机的,也是我们最常用的一个Map.它根据键的HashCode值存储数据,根据键可
+  以直接获取它的值，具有很快的访问速度。在Map 中插入、删除和定位元素，HashMap 是最好的选择。 
+(2)TreeMap取出来的是排序后的键值对。但如果您要按自然顺序或自定义顺序遍历键，那么TreeMap会更好。 
+(3) LinkedHashMap 是HashMap的一个子类，如果需要输出的顺序和输入的相同,那么用LinkedHashMap可以实现.
+
+
+TreeMap按照key进行排序：传入new Comparator<String>() 比较器， 从写compare方法  对key排序
+
+ TreeMap按照value排序：
+   Map<String, String> map = new TreeMap<String, String>();
+2.// 将map.entrySet()转换成list
+          List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(map.entrySet());
+          // 通过比较器来实现排序
+          Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
+              @Override
+              public int compare(Entry<String, String> o1, Entry<String, String> o2) {
+                  // 升序排序
+                  return o1.getValue().compareTo(o2.getValue());
+              }
+          });
+
+hashmap 按照key和value进行排序  
+ /**
+     * Map按照Key排序
+     */
+    public static void MapSortByKey() {
+        Map<String, String> map = new HashMap<String, String>();
+     
+        map.put("c", "ddddd");
+        // 将map.entrySet()转换成list
+        List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(map.entrySet());
+        // 通过比较器来实现排序
+        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
+            @Override
+            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                // 升序排序
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        for (Map.Entry<String, String> mapping : list) {
+            System.out.println(mapping.getKey() + ":" + mapping.getValue());
+        }
+    }
+
+    /**
+     * Map按照Value排序
+     */
+    public static void MapSortByValue() {
+        Map<String, String> map = new HashMap<String, String>();
+      
+        map.put("c", "ddddd");
+        // 将map.entrySet()转换成list
+        List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(map.entrySet());
+        // 通过比较器来实现排序
+        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
+            @Override
+            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                // 降序排序
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+        for (Map.Entry<String, String> mapping : list) {
+            System.out.println("key:"+mapping.getKey() + "  value:" + mapping.getValue());
+        }
+    }
+
+    public static void main(String[] args) {
+        // MapSort.TreeMapSortByKey();
+        // MapSort.TreeMapSortByValue();
+        MapSort.MapSortByKey();
+        MapSort.MapSortByValue();
+    }
+}
+```
+---
+### 克隆 
+1. 为什么需要克隆对象
+克隆的对象可能包含一些已经修改过的属性，而new出来的对象的属性都还是初始化时候的值，所以当需要一个新的对象来保存当前对象的“状态”就靠clone方法了
+
+2. 两种不同的克隆方法，浅克隆(ShallowClone)和深克隆(DeepClone)。  
+   1. 数据类型分为值类型（基本数据类型）和引用类型，值类型包括int、double、byte、boolean、char等简单数据类型，引用类型包括类、接口、数组等复杂类型。浅克隆和深克隆的主要区别在于是否支持引用类型的成员变量的复制，下
+   2. 浅克隆
+      1. 被复制的类需要实现Clonenable接口（不实现的话在调用clone方法会抛出CloneNotSupportedException异常)， 该接口为标记接口(不含任何方法)  
+      2.  覆盖clone()方法，访问修饰符设为public。方法中调用super.clone()方法得到需要的复制对象。
+      3.  克隆代码实现
+      ```
+       class Student implements Cloneable{  
+                   private int number;  
+                 
+                   public int getNumber() {  
+                       return number;  
+                   }  
+                 
+                   public void setNumber(int number) {  
+                       this.number = number;  
+                   }  
+                     
+                   @Override  
+                   public Object clone() {  
+                       Student stu = null;  
+                       try{  
+                           stu = (Student)super.clone();  
+                       }catch(CloneNotSupportedException e) {  
+                           e.printStackTrace();  
+                       }  
+                       return stu;  
+                   }  
+               }  
+       在浅克隆中，如果原型对象的成员变量是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象，也就是说原型对象和克隆对象的成员变量指向相同的内存地址。
+       简单来说，在浅克隆中，当对象被复制时只复制它本身和其中包含的值类型的成员变量，而引用类型的成员对象并没有复制
+       浅克隆的两个对象是独立
+      ```
+     
+   3. 深克隆  
+      1. 
+      ```
+      class Address implements Cloneable {  
+       4     private String add;  
+       5   
+      14     @Override  
+      15     public Object clone() {  
+      16         Address addr = null;  
+      17         try{  
+      18             addr = (Address)super.clone();  
+      19         }catch(CloneNotSupportedException e) {  
+      20             e.printStackTrace();  
+      21         }  
+      22         return addr;  
+      23     }  
+      24 }  
+      25   
+      26 class Student implements Cloneable{  
+      27     private int number;  
+      28   
+      29     private Address addr;  
+      30       
+      31  
+      47     @Override  
+      48     public Object clone() {  
+      49         Student stu = null;  
+      50         try{  
+      51             stu = (Student)super.clone();   //浅复制  
+      52         }catch(CloneNotSupportedException e) {  
+      53             e.printStackTrace();  
+      54         }  
+      55         stu.addr = (Address)addr.clone();   //深度复制  
+      56         return stu;  
+      57     }  
+      58 }  
+
+      在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象，深克隆将原型对象的所有引用对象也复制一份给克隆对象。 
+      简单来说，在深克隆中，除了对象本身被复制外，对象所包含的所有成员变量也将复制。
+      ```
+
+---
+### 构造方法是否可以重写  
+
+---  
+### hashmap
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
