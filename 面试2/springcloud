@@ -1,0 +1,85 @@
+# SpringCloud
+
+---
+
+
+## Eureka
+1. 什么是Eureka
+    ```
+   Eureka是在AWS上定位服务的REST服务
+   ```
+1. 服务端
+    ```
+   1.Starter
+       spring-cloud-dependencies
+       spring-cloud-starter-netflix-eureka-starter
+   2.声明
+       @EnableEurekaServer  声明服务端
+   3.注意事项
+       默认端口8761
+       Eureka自己不要注册到Eureka了
+   ```
+ 2. 客户端
+    ```
+    1.Starter
+        • spring-cloud-starter-netflix-eureka-client
+    2.声明
+        @EnableDiscoveryClint  声明客户端
+        @EnableEurekaClient
+    3. -些配置项
+    eureka.client. service-url. default-zone
+    eureka.client. instance.prefer-ip-address
+    ```   
+---
+### Bootstrap 配置文件
+   
+   1. Bootstrap 在springcloud中的使用
+       ```
+       启动引导阶段加载的属性
+            bootstrap.properties|yml
+            spring.cloud.bootstrap. name=bootstrap
+        常用配置
+          spring.application. name=应用名
+          配置中心相关
+       ```
+   2. Bootstrap
+      1. [Bootstrap使用遇到的问题](https://blog.csdn.net/ahutdbx/article/details/86613850)
+            ```
+          问题：项目开始使用 spring.application.name=auth来配置我的服务名的。后来改为eureka.instance.appname=auth，发现竟然路由失败，报的错误就是找不到服务名为AUTH的服务
+          问题解决：
+          1.spring.application.name的优先级比 eureka.instance.appname的高
+          2.源码：EurekaInstanceConfigBean Eureka server 中在注册服务时，使用Bootstrap中的spring.application.name
+          2.网关：其实zuul路由的时候指定的 serviceId 其实就是spring.application.name，而不是eureka.instance.appname。而且spring.application.name并不能覆盖eureka.instance.appname。
+          ```
+      2. [application.yml和 bootstrap.yml区别](https://www.cnblogs.com/BlogNetSpace/p/8469033.html)
+          1. properties和YAML两种格式区别
+                ```
+             SpringBoot默认支持properties和YAML两种格式的配置文件。
+              1. 前者格式简单，但是只支持键值对。
+              2. 自动加载约定配置项，在写配置项会后提示。
+              3.在自定义配置类：
+                  1. properties可以使用@PropertySource这样方便的加载方式；        
+                  2. yml文件的配置类加载需要使用propertySource实现：
+                      1. 使用的切入点是springboot提供的EnvironmentPostProcessor接口，这里重写postProcessEnvironment方法，在里面获取PropertySources集合对象。然后通过 PropertiesPropertysourceloader加载资源，最后放入到PropertySources配置集合对象中。
+                      2. 然后使用自定义properties文件属性，就像使用application中的一样，可以使用@value或者 @ConfigurationProperties
+             ```
+          2. application.yml和 bootstrap.yml执行顺序
+             ```
+             1. bootstrap.yml（bootstrap.properties）用来在程序引导时执行，应用于更加早期配置信息读取
+                应用设置Eureka服务端 设置服务名称，因为zuul路由的时候指定的 serviceId 其实就是bootstrap中的spring.application.name
+             2. application.yml（application.properties) 可以用来配置后续各个模块中需使用的公共参数等
+             3. bootstrap.yml 先于 application.yml 加载
+             ```
+          3. bootstrap.yml用用场景  
+                ```
+             1. 使用 Spring Cloud Config Server 的时候，在 bootstrap.yml 里面指定 spring.application.name 和 spring.cloud.config.server.git.uri和一些加密/解密的信息
+             2. 为何需要把 config server 的信息放在 bootstrap.yml 里？
+                使用 Spring Cloud 的时候，配置信息一般是从 config server 加载的，为了取得配置信息（比如密码等），你需要一些提早的引导配置。因此，把 config server 信息放在 bootstrap.yml，用来加载在这个时期真正需要的配置信息。
+             
+             ```
+          4. 启动上下文
+              ```
+             1. Bootstrap Context`负责从外部源加载配置属性并解析配置。这两个上下文共享一个从外部获取的`Environment`。
+             2. `Bootstrap`属性有高优先级，默认情况下，它们不会被本地配置覆盖。 `Bootstrap context`和`Application Context`有着不同的约定，所以新增了一个`bootstrap.yml`文件，而不是使用`application.yml` (或者`application.properties`)。保证`Bootstrap Context`和`Application Context`配置的分离。
+             3.  你可以通过设置`spring.cloud.bootstrap.enabled=false`来禁用`bootstrap`。
+             ```

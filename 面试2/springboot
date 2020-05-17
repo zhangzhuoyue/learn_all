@@ -1,0 +1,290 @@
+## SpringBoot特性
+
+###方便地创建可独立运行的Spring应用程序
+
+
+---
+### 直接内嵌Tomcat, Jetty或Undertow
+
+---
+### 简化了项目的构建配置
+
+---
+### 为Spring及第三方库提供自动配置  *
+
+
+---
+### 提供生产级特性  * health
+
+
+---
+### 无需生成代码或进行XML配置
+
+---
+
+## SpringBoot 四大核心
+
+1. 自动配置-Auto Configuration
+    1. 了解自动配置实现原理
+        ```
+       1.自动配置
+         * 基于添加的JAR依赖自动对Spring Boot应用程序进行配置
+         * spring-boot-autoconfigurain   springboot的自动配置都在这个jar
+       2.开启自动配置
+         * @EnableAutoConfiguration  在启动类上添加这个注解可以实现自动配置，因为@SpringBootApplication包含了这个注解
+            . exclude = Class<?>[] 排除自动配置，例如在多数据源使用这个注解
+         * @SpringBootApplication   启动类的自动配置，这个注解包含了@EnableAutoConfiguration，springboot帮我们实现自动配置
+       
+       ```
+   2.   自动配置的实现原理
+        ```
+            1. @EnableAutoConfiguration
+                   * AutoConfigurationImportSelector 是@EnableAutoConfiguration引入的实现类，加载spring-boot-autoconfigurain jar中的spring. factories自动配置
+                   * META-INF/spring. factories   ：自动配置项 redis rabbitmq  mongdb 常用的客户端都有；初始化，监控，失败分析等待
+                   * org. springframework.boot. autoconfiqure. EnableAutoConfiquration
+                   * AutoConfigurationImportSelector是 @EnableAutoConfiguration  import的类，在该该类中实现了加载spring. factories方法中EnableAutoConfiguration属性下的自动配置类，进入比如rabbitmq自动配置类，
+                     里面已经给我们做好了默认需要的配置项，我们在添加这些时，不至于不知道需要配置什么，可以准确的搭建服务。
+                   
+            2. 自动配置的实现原理 ：条件注解【Springboot自动配置通过条件注解实现自动配置，还是靠各种代码实现的】
+                      
+                  @Conditional   Condition是个接口，需要实现matches方法，返回true则注入bean，false则不注入。
+                  @ConditionalOnBean         //	当给定的在bean存在时,则实例化当前Bean
+                  @ConditionalOnMissingBean  //	当给定的在bean不存在时,则实例化当前Bean
+                  @ConditionalOnClass        //	当给定的类名在类路径上存在，则实例化当前Bean
+                  @ConditionalOnMissingClass //	当给定的类名在类路径上不存在，则实例化当前Bean
+            
+            3. 了解自动配置的情况
+                观察自动配置的判断结果
+                . --debug  在启动命令行添加命令
+                    ConditionEvaluationReportLygingListener  由这个监听类输出，打印在控制台，输出有些长，springboot自动配置类挺多的
+                    Positive matches     匹配
+                    Negative matches     未匹配
+                    Exclusions            排除
+                    Unconditional classes  无条件
+                    通过这个也可以看出项目中报错的依据，例如像数据源的匹配
+        ```
+   3. 手写一个自动配置类
+        ```
+      1. 主要工作内容
+      手写一个自动配置分为三步：首先，写一个@Configuration配置类，然后在配置类中做自己想要的配置，主要通过条件注解，最后像内置的springboot一样在resource META-INF/spring.factories 添加手写的自动配置类
+          编写Java Config
+              @Configuration
+          
+          添加条件
+              @Conditional
+      
+          定位自动配置
+              META-INF/spring.factories
+      
+      2. 条件注解 
+          *条件注解 
+            .  @Conditional    实在spring4才有的，其他的类条件 ，属性条件都是一句@Conditional。在Spring3中实现条件注解
+      
+          *类条件
+              . @ConditionalOnClass
+              . @ConditionalOnMissingClass
+      
+          *属性条件
+            . @ConditionalOnProperty   属性值存在的时候做什么，不存在的时候做什么
+      
+          *Bean条件
+              @ConditionalOnBean
+              @ConditionalOnMissirBean
+              @ConditionalOnSingleCandidate
+      
+          *资源条件
+             @ConditionalOnResource
+      
+          *自动配置的执行顺序
+              @AutoConfigureBefore
+              @AutoConfigureAfter
+              @AutoConfigureOrder
+      
+       自动配置代码：
+          1. 首先写一个实现ApplicationRunner【运行创建】
+          2. 自动配置类，配置实现ApplicationRunner的类
+          @configuration  配置类
+          @ConditionalOnclass (GreetingApplicationRunner.class)  存在该Class时配置类才生效
+          public class GreetingAutoConfiguration {
+          @Bean
+          @ConditionalOnMissingBean(GreetingApplicationRunner.class)   在上下文中不存在实例对象才创建
+          @ConditionalOnProperty(name = "greeting. enabled", havingValue = "true", matchIfMissing = true ) 判断配置文件中属性值
+          public GreetingApplicationRunner greetingApplicationRunner() {
+            return new GreetingApplicationRunner();
+          }
+          3. 将配置类写入到resource 中的META_INF/spring.factories 完成自动加载。
+          4. 启动项目后，可以看到加载了我们自定义的配置类。
+          
+          注意：如果在自动配置创建一个对象，然后，在@Bean使用方法创建对象，则根据自动配置中条件注解，自动配置不会在创建。
+                如果在配置文件将@ConditionalOnProperty中指定的属性值修改，则自定义配置类不会生产配置对象
+      ```
+ 
+2. 起步依赖-Starter Dependency
+    1. 了解起步依赖和实现原理
+        1. springboot的依赖项有maven管理
+            ```
+           1. springboot的依赖项有maven管理，
+               1.了解你的依赖
+                  mvn dependency: tree  查看依赖树
+                  IDEA Maven Helper插件
+               
+               2.排除特定依赖
+                  exclusion     派出以来
+               
+               3.统一管理依赖
+                 dependencyManagement    统一管理依赖
+                 Bill of Materials - bom   所有的依赖在一个bom文件中
+           
+               4. dependencies的pom文件
+                   1. 主要properties ,build 中resource plugin的管理
+                   2. dependencies 维护了大量的版本信息，可以想到，在我们在升级或降级是只需要定义相同名字的版本号，定义自己的版本号。
+                   3. 维护了大量的依赖。
+            ```
+        2. springboot 的起步依赖
+            ```
+           1.Starter Dependencies
+               ·直接面向功能
+               .一站获得所有相关依赖,不再复制粘贴
+           2.官方的Starters  :在官网的starters中列举了springboot所有的starter，例如与数据相关的spring-boot-starter-date-xxx
+                spring-boot-starter-*
+                例如数据库依赖：spring-boot-starter-jdbc    里面引入了spring-boot-starter    jdbc   hikaricp ,不再需要关心用什么连接池
+           
+           小结：主要是关注maven如何管理依赖 和 springboot官方提供的starter  Dependencies
+           ```
+        3.定制自己的起步依赖  
+         ```
+       1. 主要内容 :主要包含两块：1. 自动配置模块 ，依赖模块。2. starter 模块会自动配置模块的依赖及其他相关依赖
+           autoconfigure模块,包含自动配置代码
+           starter模块,包含指向自动配置模块的依赖及其他相关依赖
+       2. 命名方式  ：1. 防止冲突不要使用spring-boot作为前缀  2. 
+            xxx-spring-boot-autoconfigure
+            xxx-spring-boot-starter
+       ```
+
+3. springboot 配置加载机制  
+    1. application 加载顺序
+        ```
+       1. 外化配置加载顺序
+       
+           1.jar包外部的application-{profile).properties或.yml
+           2.jar包内部的application-{profle).properties或.yml
+           3.jar包外部的application.properties或.yml
+           4.jar包内部的application.properties或.yml
+       这四个properties都有可能加载，从外到内一次覆盖下去。
+       最后加载 @Configuration类上的@PropertySource
+       5.@Configuration类上的@PropertySource
+       6.SpringApplication. setDefaultProperties()设置的默认属性
+       ```
+    2. properties 的默认位置
+       ```
+       ./  ：表示当前文件
+       ./config
+       ./
+       CLASSPATH中的/config
+       CLASSPATH中的/
+
+       ```
+    
+    3. 配置propertySource抽象
+        ```
+       1. @PropertySource  使用PropertySource注解加载指定配置文件
+               1、通过《Spring Boot  @ConfigurationProperties 、@Value 注值》知道使用“@Value”与“@ConfigurationProperties”可以从全局配置文件“application.properties”或者“application.yml”中取值，然后为需要的属性赋值。
+                     Spring Boot中的@ConfigurationProperties【指定配置前缀】
+                     1. 可以将属性绑定到结构化对象【通过对象做一个属性的绑定】上支持Relaxed Binding  支持安全的类型转换
+                     2. 在启动类上 加 @EnableConfiqurationProperties   
+               
+               2、当应用比较大的时候，如果所有的内容都当在一个配置文件中，就会显得比较臃肿，同时也不太好理解和维护，此时可以将一个文件拆分为多个，使用 @PropertySource 注解加载指定的配置文件。
+               
+               3、使用 @PropertySource 注解 加载类路径下的 user.properties 配置文件，为 User.java POJO 对象的属性赋值。
+             
+               * Created by Administrator on 2018/7/11 0011.
+               * 用户···实体
+               *
+               * @ConfigurationProperties 表示 告诉SpringBoot将本类中的所有属性和配置文件中相关的配置进行绑定；
+               * prefix = "user" 表示 将配置文件中key为user的下面所有的属性与本类属性进行一一映射注入值，如果配置文件中
+               * 不存在"user"的key，则不会为POJO注入值，属性值仍然为默认值
+               * <p/>
+               * @Component 将本来标识为一个Spring 组件，因为只有是容器中的组件，容器才会为@ConfigurationProperties提供此注入功能
+               * @PropertySource (value = {"classpath:user.properties"}) 指明加载类路径下的哪个配置文件来注入值
+              
+              @PropertySource(value = {"classpath:user.properties"})
+              @Component
+              @ConfigurationProperties(prefix = "user")
+             
+              原文链接：https://blog.csdn.net/wangmx1993328/article/details/81005170
+       
+       2. 定制PropertySource
+            主要步骤
+                实现PropertySource<T>
+                从Environment取得PropertySources
+                将自己的PropertySource添加到PropertySources合适的位置
+            切入位置
+                EnvironmentPostProcessor  springboot 使用这个环境处理器
+                BeanFactoryPostProcessor 
+       使用场景：在全局配置文件中application没有定义属性,在自定义配置文件中定义，使用自定义PropertySource 获取
+                1. 使用的切入点是springboot提供的EnvironmentPostProcessor接口，这里重写postProcessEnvironment方法，在里面获取PropertySources集合对象。然后通过 PropertiesPropertysourceloader加载资源，最后放入到PropertySources配置集合对象中。
+                2. 然后使用自定义properties文件属性，就像使用application中的一样，可以使用@value或者 @ConfigurationProperties
+       使用场景：自定义的配置中心，需要将配置中心对应的PropertySource注入到Environment中就可以，系统上下文，配置文件中，配置中心的都可以找到
+       ```
+
+4. 命令行界面-Spring Boot CLI
+
+
+5. Actuator
+
+
+6. springboot docker镜像
+    ```
+   1.docker介绍
+   
+       镜像是静态的只读模板
+       镜像中包含构建Docker容器的指令
+       镜像是分层的  
+       通过Dockerfile来创建镜像
+   
+   2.dockerfile命令
+       FROM 基于哪个镜像   FROM <image>[:<tag>] 
+       ADD 添加文件  将系统中的文件复制到镜像中   ADD 「--chown-<user>:<group>] <src>.. <dest
+       ENV 设置环境变量   ENV  key value
+       CMD 容器启动时的命令  CMD 
+       RUN 运行安装命令  RUN ["executable", "param1", "param2"]CMD ["executable","param1" ,"param2"]
+       WORKIR 设置运行的工作目录   WORKDIR /path/to/workdir
+       EXPOSE 容器监听的端口      EXPOSE  8080
+   
+   3.sprongboot插件 dockerfile-maven-plugin 构建Docker镜像
+       准备工作
+           提供一个Dockerfile  里面的命令顺便介绍
+           配置dockerfile-maven-plugin插件   主要是配置
+       执行构建
+           mvn package
+           mvn dockerfile:build
+       检查结果
+          docker images
+   
+   dockerfile
+       FROM iava:8  
+       EXPOSE 8080
+       ARG JAR_FILE
+       ADD target/${JAR_FILE} /waiter-service.jar
+       ENTRYPOINT ["java", "-iar","/waiter-service.jar"]
+   ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
