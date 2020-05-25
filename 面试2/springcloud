@@ -8,7 +8,7 @@
     ```
    Eureka是在AWS上定位服务的REST服务
    ```
-1. 服务端
+2. 服务端
     ```
    1.Starter
        spring-cloud-dependencies
@@ -19,7 +19,7 @@
        默认端口8761
        Eureka自己不要注册到Eureka了
    ```
- 2. 客户端
+3. 客户端
     ```
     1.Starter
         • spring-cloud-starter-netflix-eureka-client
@@ -29,7 +29,288 @@
     3. -些配置项
     eureka.client. service-url. default-zone
     eureka.client. instance.prefer-ip-address
-    ```   
+    ```  
+
+---
+###  restTemplate  
+
+1. 如何服务发现
+    ```
+   EurekaClient   :eureka提供的
+       getNextServerFromEureka()
+   DiscoveryClient ：springcloud  提供的服务发现的抽象，使用其他的注册中心这个注解生效
+       getInstances() 
+   ```  
+2. load balancer
+    ```
+   1. 通过使用@LoadBalancer实现负载均衡
+   2. 实际是通过ClientHttpFquestInterceptor实现的  LoadBalancerInterceptor
+   ```
+3. 使用restTemplate
+    ```
+   1. 启动类添加注解：@EnableDiscoveryClient 开启客户端
+   2. 注入对象  自定义HttpComponentscLientHttpRequestFactory [requestFactory]  能够构造http request请求
+   3. 注入 restTemplate 加入注解@LoadBalancer使用负载均衡 ，构建restTemplate 连接超时  读取超时  requestFactory
+   API: 
+       http  restTemplate  
+       GET 	getForObject
+       POST	 postForObject
+       PUT	 put
+   rest
+       POST   /uri     创建  
+       DELETE /uri/xxx 删除   
+       PUT    /uri/xxx 更新或创建  
+       GET    /uri/xxx 查看 
+   
+   ```
+---
+### Feign
+    ```
+     声明式REST Web服务客户端
+    ```
+  
+  
+  
+---
+### hystrix
+
+ 
+1. 核心思想
+    ````
+   1.在断路器对象中封装受保护的方法调用
+   2.该对象监控调用和断路情况
+   3.调用失败触发阈值后,后续调用直接由断路器返回错误,不再执行实际调用
+   ```
+2. 使用AOP实现断路器
+    
+   ```
+   @Aspect
+   @Component
+   @Slf4j
+   public class CircuitBreakerAspect {
+       private static final Integer THRESHOLD = 3;
+       private Map<String, AtomicInteger> counter = new ConcurrentHashMap<>();  //统计失败此时
+       private Map<String, AtomicInteger> breakCounter = new ConcurrentHashMap<>();//断路保护次数
+   
+       @Around("execution(* geektime.spring.springbucks.customer.integration..*(..))")
+       public Object doWithCircuitBreaker(ProceedingJoinPoint pjp) throws Throwable {
+           String signature = pjp.getSignature().toLongString();  //获取调用方法
+           log.info("Invoke {}", signature);
+           Object retVal;
+           try {
+               if (counter.containsKey(signature)) {  判断失败调用集合是否存在方法 ，如果不存在则将调用方法初始化
+                   if (counter.get(signature).get() > THRESHOLD &&   判断失败调用是否达到法制
+                           breakCounter.get(signature).get() < THRESHOLD) {  断路保护次数，小于阈值，提示调用失败，并将断路保护次数加一，当断路保护次数大于阈值，则进行一次探活，如果可以正常执行，则将该调用的失败统计和断路保护次数置0；如果调用再次失败，则将失败调用加一，然后将断路保护置0.
+                       log.warn("Circuit breaker return null, break {} times.",
+                               breakCounter.get(signature).incrementAndGet());    每次调用失败
+                       return null;
+                   }
+               } else {
+                   counter.put(signature, new AtomicInteger(0));
+                   breakCounter.put(signature, new AtomicInteger(0));
+               }
+               retVal = pjp.proceed();
+               counter.get(signature).set(0);  成功调用设置0
+               breakCounter.get(signature).set(0);
+           } catch (Throwable t) {   调用发生异常  ，则设置失败次数
+               log.warn("Circuit breaker counter: {}, Throwable {}",
+                       counter.get(signature).incrementAndGet(), t.getMessage());
+               breakCounter.get(signature).set(0);
+               throw t;
+           }
+           return retVal;
+       }
+   }
+   ```
+
+3. 使用hystrix实现断路保护
+    1. @HystrixCommand
+        ```
+       实现了断路器模式
+           @HystrixCommand  在需要断路保护的方法上加入这个断路保护的注解；默认情况断路保护方法调用是在另一个线程中执行，可以做一些请求超时，默认情况下是1000毫秒。
+            
+             fallbackMethod【指定的方法和调用方法相同或者兼容 方法签名 的，当调用失败则会执行指定的方法】/ commandPrperties
+             @HystrixProperty(name-"execution. isolation.strategy",value="SEMAPHORE") 可以使用@HystrixProperty改变他的配置，改变方法调用的执行，
+              还可以配置线程池
+           wiki地址：https://github.com/Netflix/Hystrix/wiki/Confiquration
+       ```
+    2. 使用@HystrixCommand实现断路保护
+        ```
+       1. 在控制层方法加入：@HystrixCommand
+            @RestController
+            @RequestMapping("/customer")
+            @Slf4j
+            public class CustomerController {
+                @Autowired
+                private CoffeeService coffeeService;
+                @Autowired
+                private CoffeeOrderService coffeeOrderService;
+       
+                 @GetMapping("/menu")
+                    public List<Coffee> readMenu() {
+                        List<Coffee> list = coffeeService.getAll();
+                        log.info("Read Menu: {} coffee", list.size());
+                        return list;
+                    }
+       
+                @PostMapping("/order")
+                @HystrixCommand(fallbackMethod = "fallbackCreateOrder")
+                public CoffeeOrder createOrder() {
+                    NewOrderRequest orderRequest = NewOrderRequest.builder()
+                            .customer("Li Lei")
+                            .items(Arrays.asList("capuccino"))
+                            .build();
+                    CoffeeOrder order = coffeeOrderService.create(orderRequest);
+                    log.info("Order ID: {}", order != null ? order.getId() : "-");
+                    return order;
+                }
+            
+                public CoffeeOrder fallbackCreateOrder() {
+                    log.warn("Fallback to NULL order.");
+                    return null;
+                }
+            }
+       
+       2. feign调用
+           @FeignClient(name = "waiter-service", contextId = "coffeeOrder")
+           public interface CoffeeOrderService {
+               @GetMapping("/order/{id}")
+               CoffeeOrder getOrder(@PathVariable("id") Long id);
+           
+               @PostMapping(path = "/order/", consumes = MediaType.APPLICATION_JSON_VALUE,
+                       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+               CoffeeOrder create(@RequestBody NewOrderRequest newOrder);
+           }
+       ```
+4. springcloud 的支持feign调用。
+    1. feign 整合hystrix介绍 
+        ```
+       Spring Cloud支持
+           spring-cloud-starter-netflix-hystrix
+           @EnableCircuitBreaker  启动类
+       Feign支持
+           feign.hystrix. enabled-true
+           @FeignClient         受保护方法的调用在线程池中执行的，fallback也在线程池中调用。
+           . fallback【直接fallback到类中】 / fallbackFactory【获取都fallback的异常】
+       ```
+
+    1. 使用feign 整合hystrix代码
+        ```
+       1. 控制层
+         @RestController
+                   @RequestMapping("/customer")
+                   @Slf4j
+                   public class CustomerController {
+                       @Autowired
+                       private CoffeeService coffeeService;
+                       @Autowired
+                       private CoffeeOrderService coffeeOrderService;
+              
+                        @GetMapping("/menu")
+                           public List<Coffee> readMenu() {
+                               List<Coffee> list = coffeeService.getAll();
+                               log.info("Read Menu: {} coffee", list.size());
+                               return list;
+                           }
+                       }
+       2. 服务层
+       @FeignClient(name = "waiter-service", contextId = "coffee",
+               qualifier = "coffeeService", path="/coffee",
+               fallback = FallbackCoffeeService.class)        //fallback 执行 和 http请求不在一个线程中
+       // 如果用了Fallback，不要在接口上加@RequestMapping，path可以用在这里。springmvc会试图加载接口上的requestmapping方法，没有解决
+       public interface CoffeeService {
+           @GetMapping(path = "/", params = "!name")
+           List<Coffee> getAll();
+       
+           @GetMapping("/{id}")
+           Coffee getById(@PathVariable Long id);
+       
+           @GetMapping(path = "/", params = "name")
+           Coffee getByName(@RequestParam String name);
+       }
+       
+       @Slf4j
+       @Component
+       public class FallbackCoffeeService implements CoffeeService {
+           @Override
+           public List<Coffee> getAll() {
+               log.warn("Fallback to EMPTY menu.");
+               return Collections.emptyList();
+           }
+       
+           @Override
+           public Coffee getById(Long id) {
+               return null;
+           }
+       
+           @Override
+           public Coffee getByName(String name) {
+               return null;
+           }
+       }
+       ```
+---
+### 服务配置中心
+
+1. spring cloud config server  
+    ```
+   目的
+       ·提供针对外置配置的HTTP API
+   依赖
+       spring-cloud-config-server  针对云服务，提供了集中配置，git，svn 注册中心
+       @EnableConfigServer   启动类注解
+       支持Git/SVN / Vault / JDBC.
+   ```
+2. 使用Git作为后端存储
+   ```
+   配置
+      MultipleJGitEnvironmentProperties  从这个配置文件中查看config需要哪些配置。
+      	spring.cloud.config.server.git.uri
+   配置文件的要素
+      {application},即客户端的spring.application.name
+      {profile},即客户端的spring.profiles.active
+      {label},配置文件的特定标签,默认master
+   ```
+   
+3. 访问配置内容
+   ```
+    HTTP请求
+      GET /{application}/{profile} [/{Label}]
+      GET /{application}-{profile}.yml
+      GET /{Label}/{application}-{profile} .yml
+      GET /{application}-{profile}.properties
+      GET /{Label}/{application}-{profile}.properties
+
+   ```
+4. 服务端 配置文件
+    ```
+   1. 在配置文件 bootstrap.propertires设置项目名
+   2. application.properties  设置eureka  端口号  git地址
+   3. 在启动类中设置@EnableConfigServer
+   
+   配置后通过 http://localhost/vali-sgf.yml访问配置
+   ```
+5. 客户端  
+    ```
+   发现配置中心
+       bootstrap.properties | yml通过服务发现
+       spring.cloud.config.discsvery.enabled=true  设置config服务发现
+       • spring.cloud.config.discovery.service-id=configserver  设置发现服务id
+   配置刷新
+       @RefreshScope   在实体上加注解
+       Endpoint-/actuator/refresh    http://localhost:8080/actuator/refresh
+   ```
+
+
+
+
+
+
+
+
+
+
+
 ---
 ### Bootstrap 配置文件
    
@@ -83,3 +364,182 @@
              2. `Bootstrap`属性有高优先级，默认情况下，它们不会被本地配置覆盖。 `Bootstrap context`和`Application Context`有着不同的约定，所以新增了一个`bootstrap.yml`文件，而不是使用`application.yml` (或者`application.properties`)。保证`Bootstrap Context`和`Application Context`配置的分离。
              3.  你可以通过设置`spring.cloud.bootstrap.enabled=false`来禁用`bootstrap`。
              ```
+
+---
+### rest
+
+1. rest基础
+    ```
+   rest的基础就是http请求中使用特定的请求，代表具体的操作
+   get  查询
+   put  修改
+   post 增加
+   delete 删除
+   ```
+   
+---
+## 负载平衡
+
+1. 负载平衡旨在优化资源使用，最大化吞吐量，最小化响应时间并避免任何单一资源的过载。使用多个组件进行负载平衡而不是单个组件可能会通过冗余来提高可靠性和可用性
+---
+### Hystrix
+1. 什么是 Hystrix？它如何实现容错?  
+    1. Hystrix 是一个延迟和容错库，旨在隔离远程系统，服务和第三方库的访问点，当出现故障是不可避免的故障时，停止级联故障
+    2. hystrix 在被断路器保护的方法，如果调用失败 调用 Fallback 方法功能 调用失败处理。打日志，
+---
+### SpringBoot和SpringCloud的区别？
+1. SpringBoot专注于快速方便的开发单个个体微服务。  
+2. SpringCloud是关注全局的微服务协调整理治理框架，它将SpringBoot开发的一个个单体微服务整合并管理起来，为各个微服务之间提供，配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等集成服务SpringBoot可以离开SpringCloud独立使用开发项目， 但是SpringCloud离不开SpringBoot ，属于依赖的关系.
+3. SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud关注全局的 治理框架
+ ---  
+### Eureka和zookeeper都可以提供服务注册与发现的功能，请说说两个的区别？
+1. Zookeeper保证了CP（C：一致性，P：分区容错性），Eureka保证了AP（A：高可用）
+2. （1）当向注册中心查询服务列表时，我们可以容忍注册中心返回的是几分钟以前的信息，但不能容忍直接down掉不可用。也就是说，服务注册功能对高可用性要求比较高，但zk会出现这样一种情况，当master节点因为网络故障与其他节点失去联系时，剩余节点会重新选leader。问题在于，选取leader时间过长，30 ~120s，且选取期间zk集群都不可用，这样就会导致选取期间注册服务瘫痪。在云部署的环境下，因网络问题使得zk集群失去master节点是较大概率会发生的事，虽然服务能够恢复，但是漫长的选取时间导致的注册长期不可用是不能容忍的。
+3. （2）Eureka保证 用性，Eureka各个节点是平等的，几个节点挂掉不会影响正常节点的工作，剩余的节点仍然可以提供注册和查询服务。而Eureka的客户端向某个Eureka注册或发现时发生连接失败，则会自动切换到其他节点，只要有一台Eureka还在，就能保证注册服务可用，只是查到的信息可能不是最新的。除此之外，Eureka还有自我保护机制，如果在15分钟内超过85%的节点没有正常的心跳，那么Eureka就认为客户端与注册中心发生了网络故障，此时会出现以下几种情况：
+    1. ①、Eureka不在从注册列表中移除因为长时间没有收到心跳而应该过期的服务。
+    2. ②、Eureka仍然能够接受新服务的注册和查询请求，但是不会被同步到其他节点上（即保证当前节点仍然可用）
+    3. ③、当网络稳定时，当前实例新的注册信息会被同步到其他节点。因此，Eureka可以很好的应对因网络故障导致部分节点失去联系的情况，而不会像Zookeeper那样使整个微服务瘫痪
+---    
+### RPC
+1. Dubbo是Alibaba开发的一个RPC框架，远程接口基于Java Interface, 依托于Spring框架。
+---
+### spring cloud 和d bbo区别?
+1. （1）服务调用方式 dubbo是RPC spri cloud Rest Api
+2. （2）注册中心,dubbo 是zookeep r springcloud是eureka，也可以是zookeeper
+3. （3）服务网关,dubbo本身没有实现，只能通过其他第三方技术整合，springcloud有Zuul路由网关，作为路由服务器，进行消费者的请求分发,springcloud支持断路器，与git完美集成配置文件支持版本控制，事物总线实现配置文 的更新与服务自动装配等等一系列的微服务架构要素。
+--- 
+### REST 和RPC对比
+1. （1）RPC主要的缺陷是服务提供方和调用方式之间的依赖太强，需要对每一个微服务进行接口的定义，并通过持续继承发布，严格版本控制才不会出现冲突。
+2. （2）REST是轻量级的接口，服务的提供和调用不存在代码之间的耦合，只需要一个约定进行规范。
+---
+### 微服务之间是如何独立通讯的?
+1. 1）远程调用，比如feign调用，直接通过远程过程调用来访问别的service。
+2. 2）消息中间件
+---
+### 微服务之间是如何独立通讯的?
+1. （1）远程调用，比如feign调用，直接通过远程过程调用来访问别的service。
+   
+2. （2）消息中间件
+---
+### springcloud如何实现服务的注册?
+1. （1）服务发布时，指定对应的服务名,将服务注册到 注册中心(eureka zookeeper)
+2. （2）注册中心加@EnableEurekaServer,服务用@EnableDiscoveryClient，然后用ribbon或feign进行服务直接的调用发现。
+ ---
+### Eureka和Zookeeper区别
+1. （1）Eureka取CAP的AP，注重可用性，Zookeeper取CAP的CP注重一致性。
+2. （2）Zookeeper在选举期间注册服务瘫痪，虽然服务最终会恢复，但选举期间不可用。
+3. （3）eureka的自我保护机制，会导致一个结果就是不会再从注册列表移除因长时间没收到心跳而过期的服务。依然能接受新服务的注册和查询请求，但不会被同步到其他节点。不会服务瘫痪。
+4. （4）Zookeeper有Leader和Follower角色，Eureka各个节点平等。
+5. （5）Zookeeper采用过半数存活原则， reka采用自我保护机制解决分区 。
+6. （6）eureka本质是一个工程，Zookeeper只是一个进程。
+---
+### eureka自我保护机制是什么?
+1. 当Eureka Server 点在短时间内丢失了过多实例的连接时（比如网络故障或频繁启动关闭客户端）节点会进入自我保护模式，保护注册信息，不再删除注册数据，故障恢复时，自动退出自我保护模式。
+
+---
+### 什么是Ribbon？
+1. ribbon是一个负载均衡客户端，可以很好的控制htt和tcp的一些行为。feign默认集成了ribbon。
+
+---
+### 什么是feigin？它的优点是什么？
+1. （1）feign采用的是基于接口的注解
+2. （2）feign整合了ribbon，具有负载均衡的能力
+3. （3）整合了Hystrix，具有熔断的能力使用:  
+    1. （1）添加pom依赖。  
+    2. （2）启动类添加@EnableFeignClients  
+    3. （3）定义一个接口@FeignClient(name=“xxx”)指定调用哪个服务  
+
+---
+### Ribbon和Feign的区别？
+1. （1）Ribbon都是调用其他服务的，但方式不同。
+2. （2）启动类注解不同，Ribbon是@RibbonClient feign的是@EnableFeignClients
+3. （3）服务指定的位置不同，Ribbon是在@RibbonClient注解上声明，Feign则是在定义抽象方法的接口中使用@FeignClient声明。
+4. （4）调用方式不同，Ribbon需要自己构建http请求，模拟http请求然后使用RestTemplate发送给其他服务，步骤相当繁琐。Feign需要将调用的方法定义成抽象方法即可。
+---
+### 什么是Spring Cloud Bus?
+1. spring cloud bus 将分布式的节点用轻量的消息代理连接起来，它可以用于广播配置文件的更改或者服务直接的通讯，也可用于监控。如果修改了配置文件，发送一次请求，所有的客户端便会重新读取配置文件。
+2.  使用:
+    1. （1）添加依赖
+    2. （2）配置rabbimq
+---
+### springcloud断路器作用?
+1. 当一个服务调用另一个服务由于网络原因或自 原因出现问题，调用者就会等 调用者的响应 当更多的服务请求到这些资源导致更多的请求等待，发生连锁效应（雪崩效应）断路器有完全打开状态:一段时间内 到一定的次数无法调用 并且多次监 没有恢复的迹象 断路器完全打开 那么下次请求就不会请求到该服务半开:短时间内 有恢复迹象 断路器会将部分请求发给该服务，正常调用时 断路器关闭关闭：当服务一直处于正常状 能正常调用
+---
+### Spring Cloud Gateway?
+1. Spring Cloud Gateway是Spring Cloud官方推出的第二代网关框架，取代Zuul网关。网关作为流量的，在微服务系统中有着非常作用，网关常见的功能有路由转发、权限校验、限流控制等作用。使用了一个RouteLocatorBuilder的bean去创建路由，除了创建路由RouteLocatorBuilder可以让你添加各种predicates和ﬁlters，predicates断言的意思，顾名思义就是根据具体的请求的规则，由具体的route去处理，ﬁlters是各种过滤器，用来对请求做各种判断和修改。
+---
+### 作为 务注册中心，Eureka比Zookeeper好在哪里?
+1. （1）Eureka保证的是可用性和分区容错性，Zookeeper 保证的是一致性和分区容错性 。
+2. （2）Eureka还有一种自我保护机制，如果在15分钟内超过85%的节点都没有正常的心跳，那么Eureka就认为客户端与注册中心出现了网络故障。而不会像zookeeper那样使整个注册服务瘫痪。
+---
+### 什么是 Ribbon负载均衡？
+1. （1）Spring Cloud Ribbon是基于Netﬂix Ribbon实现的一套客户端 负载均衡的工具。
+2. （2）Ribbon客户端组件提供一系列完善的配置项如连接超时，重试等。简单的说，就是在配置文件中列出Load Balancer（简称LB）后面所有的机器，Ribbon会自动的帮助你基于某种规则（如简单轮询，随机连接等）去连接这些机器。我们也很容易使用Ribbon实现自定义的负载均衡算法。
+---
+### Ribbon负载均衡能干什么？
+1. （1）将用户的请求平摊的分配到多个服务上
+2. （2）集中式LB即在服务的消费方和提供方之间使用独立的LB设施(可以是硬件，如F5, 也可以是软件，如nginx), 由该设施负责把访问请求通过某种策略转发至服务的提供方；
+3. （3）进程内LB将LB逻辑集成到消费方，消费方从服务注册中心获知有哪些地址可用，然后自己再从这些地址中选择出一个合适的服务器。
+4. 注意： Ribbon就属于进程内LB，它只是一个类库，集成于消费方进程，消费方 它来获取到服务提供方的地址。
+---
+### 什么是 zuul路由网关
+1. （1）Zuul 包含了对请求的路由和过滤两个最主要的功能:其中 责将外部请求转发到具体的微服务实例上，是实现外部访问统一入口的基础而过滤器功能则负 请求的处理过程进行干预，是实现请求校验、服务聚合等功能的基础、
+2. （2）Zuul和Eureka进行整合，将Zuul自身注册为Eureka服务治理下的应用，同时从Eureka中获得其他微服务的消息，也即以后的访问微服务都是通过Zuul跳转后获得。
+3. 注意： Zuul服务最终还是会注册进Eureka 提供=代理+路由+过滤 三大功能
+---
+### 分布式配置中心能干嘛？
+1. （1）集中管理配置文件不同环境不同配置，动态化的配置更新，分环境部署比如dev/test/prod/beta/release
+2. （2）运行期间动态调整 置，不再需要在每个服务部署的机器上编写配置文件，服务会向配置中心统一拉取配置自己的信息
+3. （3）当配置发生变动时，服务不需要重启即可感知到配置的变化并应用新的配置将配置信息以REST接口的形式暴露
+---
+### Hystrix相关注解
+1. @EnableHystrix：开启熔断
+2. @HystrixCommand(fallbackMethod=”XXX”)：声明一个失败回滚处理函数XXX，当被注解的方法执行超时（默认是 0毫秒），就会执行fallback函数，返回错误提示。
+---
+### Eureka和zookeeper都可以提供服务注册与发现的功能，请说说两个的区别？
+1. Zookeeper保证了CP（C：一致性，P：分区容错性），Eureka保证了AP（A：高可用）
+2. （1）当向注册中心查询服务列表时，我们可以容忍注册中心返回的是几分钟以前的信息，但不能容忍直接down掉不可用。 就是说，服务注册功能对高可用性要求比较高，但zk会出现这样一种情况，当master节点因为网络故障与其他节点失去联系时，剩余节点会重新选leader。问题在于，选取leader时间过长，30 ~ 120s，且选取期间zk集群都不可用，这样就会导致选取期间注册服务瘫痪。在云部署的环境下，因网络问题使得zk集群失去master节点是较大概率会发生的事，虽然服务能够恢复，但是漫长的选取时间导致的注册长期不可用是不能容忍的。
+2. （2）Eureka保证了可用性，Eureka各个节点是平等的，几个节点挂掉不会影响正常节点的工作，剩余的节点仍然可以提供注册和查询服务。而Eureka的客户端向某个Eureka注册或发现时发生连接失败，则会自动切换到其他节点，只要有一台Eureka还在，就能保证注册服务可用，只是查到的信息可能不是最新的。除此之外，Eureka还有自我保护机制，如果在15分钟内超过85%的节点没有正常的心跳，那么Eureka就认为 户端与注册中心发生了网络故障，此时会出现以下几种情况：
+    1. ①、Eureka不 从注册列表中移除因为长时间没有收到心跳而应该过期的服务。
+    2. ②、Eureka仍然能够接受新服务的注册和查询请求，但是不会被同步到其他节点上（即保证当前节点仍然可用）
+    3. ③、当网络稳定时，当前实例新的注册信息会被同步到其他节点。因此，Eureka可以很好的应对因网络故障导致部分节点失去联系的情况，而不会像Zookeeper那样使整个微服务瘫痪。
+
+---
+### Spring Cloud 的核心功能：
+    
+    分布式/版本化配置。
+    服务注册和发现。
+    路由。
+    服务和服务之间的调用。
+    负载均衡。
+    断路器。
+
+---
+### springcloud各组件的运行流程：
+    
+    所有请求都统一通过 API 网关(Zuul)来访问内部服务。
+    网关接收到请求后，从注册中心(Eureka)获取可用服务。
+    由 Ribbon 进行均衡负载后，分发到后端的具体实例。
+    微服务之间通过 Feign 进行通信处理业务。
+    Hystrix 负责处理服务超时熔断。
+
+---
+### springcloud总述
+
+1. Spring Boot 是一套快速配置脚手架，可以基于 Spring Boot 快速开发单个微服务。
+
+2. Spring Cloud 是一个基于 Spring Boot 实现的服务治理工具包;Spring Boot 专注于快速、方便集成的单个微服务个体;Spring Cloud 关注全局的服务治理框架。
+
+3. Spring Boot / Cloud 是微服务实践的最佳落地方案。
+
+4. Spring Boot / Cloud 微服务实践背景
+
+### 微服务架构
+1. 微服务架构是一种架构模式，它提倡将单一应用程序划分成一组小的服务，服务之间互相协调、互相配合，为用户提供最终价值。每个服务运行在其独立的进程中，服务与服务间采用轻量级的通信机制互相沟通(
+
+--- 
+### zuul
+
+https://www.php.cn/java-article-417097.html
+
+

@@ -11,7 +11,12 @@
        2.  java object类默认的hashcode()计算方法是根据对象的内存地址来计算的。所以可由此来判断默认不重写hashcode()方法的两个对象是否相同。
        3. 可重写obejetc 类的hashCode()方法，去根据object对象的实际内容生成hashcode值，比如String类，改写了hashcode()，根据string字符串的内容区生成hashcode，而非根据object类默认的内存地址。
        4. 首先判断hash，在判断equals 。
-
+3. == equals
+    ```
+   1.   如果是基本类型比较，那么只能用==来比较，不能用equals
+   2.  对于基本类型的包装类型，比如Boolean、Character、Byte、Shot、Integer、Long、Float、Double等的引用变量，==是比较地址的，而equals是比较内容的。比如： 
+   3. 不错，如果在新类中被覆盖了equals方法，就可以用来比较内容的 
+   ```
 ---
 ### 接口和抽象类区别  
 
@@ -205,6 +210,16 @@ hashmap 按照key和value进行排序
 }
 ```
 ---
+### [集合的两种排序方法](https://blog.csdn.net/qq_43437465/article/details/89437637)
+```
+return this.age > o.age ? -1 : 1;   降序排列   等价于 return o.age - this.age
+
+return this.age > o.age ? 1 : -1;   升序排列   等价于  return this.age - o.age
+```
+---
+### [hashmap遍历](https://www.cnblogs.com/Bkxk/p/11063720.html)
+
+---
 ### 克隆 
 1. 为什么需要克隆对象
 克隆的对象可能包含一些已经修改过的属性，而new出来的对象的属性都还是初始化时候的值，所以当需要一个新的对象来保存当前对象的“状态”就靠clone方法了
@@ -239,7 +254,7 @@ hashmap 按照key和value进行排序
                    }  
                }  
        在浅克隆中，如果原型对象的成员变量是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象，也就是说原型对象和克隆对象的成员变量指向相同的内存地址。
-       简单来说，在浅克隆中，当对象被复制时只复制它本身和其中包含的值类型的成员变量，而引用类型的成员对象并没有复制
+       简单来说，在浅克隆中，当对象被复制时只复制它本身和其中包含的基本类型的成员变量，而引用类型的成员对象并没有复制
        浅克隆的两个对象是独立
       ```
      
@@ -288,9 +303,87 @@ hashmap 按照key和value进行排序
 ### 构造方法是否可以重写  
 
 ---  
-### hashmap
-
-
+### 集合遍历
+1. hashmap
+    ```
+   Map遍历方式：
+    
+   1、通过获取所有的key按照key来遍历
+   //Set<Integer> set = map.keySet(); //得到所有key的集合
+   for (Integer in : map.keySet()) {
+       String str = map.get(in);//得到每个key多对用value的值
+   }
+    
+   2、通过Map.entrySet使用iterator遍历key和value
+   Iterator<Map.Entry<Integer, String>> it = map.entrySet().iterator();
+   while (it.hasNext()) {
+        Map.Entry<Integer, String> entry = it.next();
+          System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+   }
+    
+   3、通过Map.entrySet遍历key和value，推荐，尤其是容量大时
+   for (Map.Entry<Integer, String> entry : map.entrySet()) {
+       //Map.entry<Integer,String> 映射项（键-值对）  有几个方法：用上面的名字entry
+       //entry.getKey() ;entry.getValue(); entry.setValue();
+       //map.entrySet()  返回此映射中包含的映射关系的 Set视图。
+       System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+   }
+    
+   4、通过Map.values()遍历所有的value，但不能遍历key
+   for (String v : map.values()) {
+       System.out.println("value= " + v);
+   ```
+2. list
+    ```
+   List遍历方式：
+   第一种：
+   for(Iterator iterator = list.iterator();iterator.hasNext();){                    
+       int i = (Integer) iterator.next();                   
+       System.out.println(i);               
+   }
+   第二种：
+   Iterator iterator = list.iterator();
+   while(iterator.hasNext()){
+       int i = (Integer) iterator.next();
+       System.out.println(i);
+   }
+   第三种：
+   for (Object object : list) { 
+       System.out.println(object); 
+   }
+   第四种：
+   for(int i = 0 ;i<list.size();i++) {  
+       int j= (Integer) list.get(i);
+       System.out.println(j);  
+   }
+   ```
+3. set
+    ```
+   1.迭代遍历：
+   Set set = new HashSet();
+   Iterator it = set.iterator();
+   while (it.hasNext()) {
+   String str = it.next();
+   System.out.println(str);
+   }
+   
+   2.for循环遍历：
+   for (String str : set) {
+   System.out.println(str);
+   }
+   ————————————————
+   版权声明：本文为CSDN博主「Java成长记_Camel」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+   原文链接：https://blog.csdn.net/qq_30225725/article/details/88016602
+   ```
+   
+    ```
+    1、传统的for循环遍历，基于计数器的：
+           遍历者自己在集合外部维护一个计数器，然后依次读取每一个位置的元素，当读取到最后一个元素后，停止。主要就是需要按元素的位置来读取元素。
+   2、迭代器遍历，Iterator：
+           每一个具体实现的数据集合，一般都需要提供相应的Iterator。相比于传统for循环，Iterator取缔了显式的遍历计数器。所以基于顺序存储集合的Iterator可以直接按位置访问数据。而基于链式存储集合的Iterator，正常的实现，都是需要保存当前遍历的位置。然后根据当前位置来向前或者向后移动指针。
+   3、foreach循环遍历：
+           根据反编译的字节码可以发现，foreach内部也是采用了Iterator的方式实现，只不过Java编译器帮我们生成了这些代码。
+   ```
 
 
 

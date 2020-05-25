@@ -1,0 +1,134 @@
+### redis为什么是分布式锁
+1. redis为什么可以做分布式锁？
+    ```
+   Redis为单进程单线程模式，采用队列模式将并发访问变成串行访问，且多客户端对Redis的连接并不存在竞争关系。
+   
+   代码实现的，主要是针对某一笔数据的流水号加锁，防止多个线程写入这个数据。（具有互斥性）
+   ```
+
+2. redis据你所知是单线程的，为什么redis还可以快？
+    ```
+   1.开发语言
+   现在我们都用高级语言来编程，比如 Java、python 等。也许你会觉得 C 语言很古老，但是它真的很有用，毕竟 unix 系统就是用 C 实现的，所以 C 语言是非常贴近操作系统的语言。Redis 就是用 C 语言开发的，所以执行会比较快。
+   
+   2.纯内存访问
+   Redis 将所有数据放在内存中，非数据同步正常工作时，是不需要从磁盘读取数据的
+   
+   3.单线程
+   第一，单线程简化算法的实现，并发的数据结构实现不但困难而且测试也麻烦。
+   第二，单线程避免了线程切换以及加锁释放锁带来的消耗，对于服务端开发来说，锁和线程切换通常是性能杀手。
+    
+   4.非阻塞多路 I/O 复用机制
+   1. 行IO操作的socket添加到select中，然后阻塞等待select系统调用返回。当数据到达时，socket被激活，select函数返回。用户线程正式发起read请求，读取数据并继续执行
+   2. 使用select以后最大的优势是用户可以在一个线程内同时处理多个socket的IO请求。用户可以注册多个socket，然后不断地调用select读取被激活的socket，即可达到在同一个线程内同时处理多个IO请求的目的
+   ```
+---
+### AOP底层原理
+1. 
+
+---
+### dubbo给zk提供了哪些信息
+```
+<!-- 添加 DUBBO SCHEMA -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 应用名 -->
+    <dubbo:application name="dubbodemo-provider"/>
+    <!-- 连接到哪个本地注册中心 -->
+    <dubbo:registry id="dubbodemo" address="zookeeper://localhost:2181"/>
+    <!-- 用dubbo协议在20880端口暴露服务 -->
+    <dubbo:protocol name="dubbo" port="28080"/>
+    <!-- 声明需要暴露的服务接口 -->
+    <dubbo:service registry="dubbodemo" timeout="3000" interface="com.chanshuyi.service.IUserService" ref="userService"/>
+</beans>
+复制代码
+可以看到这里有几个关键参数：application、registry、protocol、service。
+
+application 指当前应用名称，主要用来给 zookeeper 注册中心计算应用间依赖关系。
+registry 用来声明一个注册中心，这里声明了一个id 为 registry 的注册中心，地址是本地服务器的 2181 端口（这里要与 zookeeper 配置文件的 clientPort 属性值一致）。
+protocol 指该应用用 dubbo 协议在 28080 端口暴露服务，其他应用可以通过这个接口调用服务。
+service 用来声明需要暴露的服务接口，这里暴露了IUserService 接口，并将接口注册到 id 为 dubbodemo 的注册中心，它引用了 Spring 中名为 userService 的类，超时时间为 3 秒。
+到这里 provider 提供者的配置基本上完成，但我们还需要写一个启动类将 provider 启动起来提供服务。
+
+创建 com.chanshuyi.util.BeanFactoryUtil.java，是加载 Spring 的工具类：
+```
+
+---
+### [dubbo可以直接调用](https://blog.csdn.net/linuu/article/details/54312934)
+
+1.远程调用RPC来说，远程调用就是服务消费者直接通过网络IO传递参数，传递方法名，服务提供者获取到参数，方法名之后通过反射来调用本地的方法，执行完本地的方法之后，将结果再通过网络传递给调用方，这个过程就是RPC最最简单也是最最精髓的实现，关于注册中心，其实是服务治理的模块，注册中心方便服务的管理，发现，统计等等好处，注册中心把服务提供者的地址发送给服务消费者，服务消费者拿着服务提供者的地址，就可以完成服务消费了
+
+---
+### 类加载
+
+```
+二、类加载时机
+创建类的实例，也就是new一个对象
+访问某个类或接口的静态变量，或者对该静态变量赋值
+调用类的静态方法
+反射（Class.forName("com.lyj.load")）
+初始化一个类的子类（会首先初始化子类的父类）
+JVM启动时标明的启动类，即文件名和类名相同的那个类    
+
+类加载机制
+https://www.cnblogs.com/zhxiansheng/p/11128589.html
+
+
+```
+
+### 垃圾回收
+```
+https://www.cnblogs.com/UncleWang001/articles/10422289.html
+```
+---
+
+### 分库分表设计思想
+
+1. 分库分表的思想
+    1. 垂直切分
+        ```
+       1. 根据表功能进行拆分，到不同的数据库
+       2. 优点：◆ 数据库的拆分简单明了，拆分规则明确；
+               ◆ 应用程序模块清晰明确，整合容易；
+       3. 缺点：
+              ◆ 部分表关联无法在数据库级别完成，需要在程序中完成；
+              
+              ◆ 对于访问极其频繁且数据量超大的表仍然存在性能平静，不一定能满足要求；
+              
+              ◆ 事务处理相对更为复杂；
+              
+              ◆ 切分达到一定程度之后，扩展性会遇到限制；
+       ```
+2. 分库分表后如何整合数据源，可以使用mycat 
+
+3. 数据库切片后的问题
+   1. 引入分布式事务的问题；
+   
+   2. 跨节点Join的问题；(DB之间的表链接)
+   
+   3.  跨节点合并排序分页问题；
+   
+   4. 分表后如何计算count
+
+---
+### 微服务之间的事务如何处理
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
