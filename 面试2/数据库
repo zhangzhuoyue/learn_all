@@ -498,6 +498,8 @@ select t1.b,t2.* from  t2  straight_join t1 on (t1.b=t2.b) where t2.id<=100;
 (9) DISTINCT: 去除重复，产生虚拟表VT9;
 (10) ORDER BY: 将虚拟表VT9中的记录按照<order_by_list>进行排序操作，产生虚拟表VT10;
 (11) LIMIT: 取出指定街行的记录，产生虚拟表VT11，并返回给查询用户
+
+通过对执行顺序的理解，可以为我们未来的优化工作带来很大帮助。一个很浅显的认识就是，优化动作越靠前越好。
 ```
 ---
 ### 锁的分类
@@ -626,7 +628,7 @@ select num from a where exists(select 1 from b where num=a.num)
 ---
 ### 分表后如何做统计操作
 ---
-### Mysql数据库常用函数
+### [Mysql数据库常用函数](https://www.cnblogs.com/progor/p/8832663.html)
 
 ```
 字符串

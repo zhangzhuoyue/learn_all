@@ -5,3 +5,6 @@
 * xml中的namespace 就是对应着相应的全类名
 * 自动配置resultType，手动配置resultMap
 
+---
+问题：Spring Boot 的核心配置文件有哪几个？它们的区别是什么？
+
